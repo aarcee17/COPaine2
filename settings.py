@@ -1,0 +1,4 @@
+TITLE = "COPaine"
+WIDTH = 1200
+HEIGHT = 750
+FPS = 60
