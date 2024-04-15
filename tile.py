@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+from debug import debug
 
 class Tile(pg.sprite.Sprite):
     def __init__(self, pos, groups, sprite_type=None, surface=pg.Surface((TILESIZE, TILESIZE))):
