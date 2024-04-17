@@ -1,5 +1,6 @@
 import pygame
 from settings import *
+from debug import debug
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos, groups,surface = pygame.Surface((TILESIZE,TILESIZE))):
