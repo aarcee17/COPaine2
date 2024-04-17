@@ -30,6 +30,7 @@ class Intro:
 
             # If the intro animation is complete, transition to main.py
             if self.level0.is_complete():
+                
                 pygame.quit()
                 main.main()  # Call the main function from main.py
 
