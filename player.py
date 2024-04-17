@@ -60,13 +60,26 @@ class Player(pg.sprite.Sprite):
         # Move vertically and check collision
         self.rectify('y', speed)
         self.collision('vertical')
+        self.rect.center = self.hitbox.center
+		
 
-    def rectify(self, axis, speed):
-        if axis == 'x':
-            self.rect.x += self.direction.x * speed
-        elif axis == 'y':
-            self.rect.y += self.direction.y * speed
+    def collision(self,direction):
+        if direction == 'horizontal':
+            for sprite in self.obstacle_sprites:
+                if sprite.hitbox.colliderect(self.hitbox):
+                    if self.direction.x > 0: # moving right
+                        self.hitbox.right = sprite.hitbox.left
+                    if self.direction.x < 0: # moving left
+                        self.hitbox.left = sprite.hitbox.right
 
+        if direction == 'vertical':
+            for sprite in self.obstacle_sprites:
+                if sprite.hitbox.colliderect(self.hitbox):
+                    if self.direction.y > 0: # moving down
+                        self.hitbox.bottom = sprite.hitbox.top
+                    if self.direction.y < 0: # moving up
+                        self.hitbox.top = sprite.hitbox.bottom
+    
     def collision(self, direction):
         for sprite in self.obstacle_sprites:
             if self.rect.colliderect(sprite.rect):
