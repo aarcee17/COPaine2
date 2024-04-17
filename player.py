@@ -14,6 +14,7 @@ class Player(pg.sprite.Sprite):
         self.dodge_speed = 5  # Define the dodge speed
         self.dodge_duration = 200  # Duration of the dodge in milliseconds
         self.dodge_timer = 0  # Timer to track dodge duration
+        self.hitbox = self.rect.inflate(0,-26)
 
     def input(self):
         keys = pg.key.get_pressed()
@@ -62,7 +63,12 @@ class Player(pg.sprite.Sprite):
         self.collision('vertical')
         self.rect.center = self.hitbox.center
 		
-
+    def rectify(self, axis, speed):
+        if axis == 'x':
+            self.hitbox.x += self.direction.x * speed
+        if axis == 'y':
+            self.hitbox.y += self.direction.y * speed
+    
     def collision(self,direction):
         if direction == 'horizontal':
             for sprite in self.obstacle_sprites:
@@ -80,19 +86,6 @@ class Player(pg.sprite.Sprite):
                     if self.direction.y < 0: # moving up
                         self.hitbox.top = sprite.hitbox.bottom
     
-    def collision(self, direction):
-        for sprite in self.obstacle_sprites:
-            if self.rect.colliderect(sprite.rect):
-                if direction == 'horizontal':
-                    if self.direction.x > 0:  # Moving right
-                        self.rect.right = min(self.rect.right, sprite.rect.left)
-                    elif self.direction.x < 0:  # Moving left
-                        self.rect.left = max(self.rect.left, sprite.rect.right)
-                elif direction == 'vertical':
-                    if self.direction.y > 0:  # Moving down
-                        self.rect.bottom = min(self.rect.bottom, sprite.rect.top)
-                    elif self.direction.y < 0:  # Moving up
-                        self.rect.top = max(self.rect.top, sprite.rect.bottom)
 
     def update(self):
         self.input()
