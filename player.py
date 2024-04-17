@@ -12,7 +12,7 @@ class Player(pg.sprite.Sprite):
         self.obstacle_sprites = obstacle_sprites
         self.dodging = False
         self.dodge_speed = 5  # Define the dodge speed
-        self.dodge_duration = 100  # Duration of the dodge in milliseconds
+        self.dodge_duration = 200  # Duration of the dodge in milliseconds
         self.dodge_timer = 0  # Timer to track dodge duration
 
     def input(self):
