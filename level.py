@@ -120,7 +120,7 @@ class Level:
 	def run(self):
 		# update and draw the game
 		self.visible_sprites.custom_draw(self.player)
-		debug([self.player.rect.center, self.player.health, self.player.high, self.player.exp])
+		# debug([self.player.rect.center, self.player.health, self.player.high, self.player.exp])
 		self.visible_sprites.update()
 		
 		self.check_mini_game()
@@ -162,7 +162,7 @@ class Level:
 		if ((self.player.rect.center[0] >= 9 and self.mini_game_active[0] and self.player.rect.center[0] <= 110 and self.player.rect.center[1] == 590 and self.player.currdir == "up") or (self.player.rect.center[0] >= 1500 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[1]) or (self.player.rect.center[0] == 1888 and self.player.rect.center[1] <= 1450 and self.player.rect.center[1] >= 1350 and self.player.currdir == "right" and self.mini_game_active[2]) or (self.player.rect.center[0] >= 2900 and self.player.rect.center[0] <= 3000 and self.player.rect.center[1] == 590 and self.player.currdir == "up" and self.mini_game_active[3]) or (self.player.rect.center[0] >= 3000 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] >= 1000 and self.player.rect.center[1] <= 1400 and self.mini_game_active[4]) or (self.player.rect.center[0] == 2528 and self.player.rect.center[1] >= 1350 and self.player.rect.center[1] <= 1440 and self.mini_game_active[5]) or (self.player.rect.center[0] >= 2050 and self.player.rect.center[0] <= 2400 and self.player.rect.center[1] >= 35 and self.player.rect.center[1] <= 50 and self.mini_game_active[6]) or (self.player.rect.center[0] == 1632 and self.player.rect.center[1] >= 380 and self.player.rect.center[1] <= 480 and self.mini_game_active[6]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[7]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[8]) or (((not self.mini_game_active[0]) and (not self.mini_game_active[1]) and (not self.mini_game_active[2]) and (not self.mini_game_active[3]) and (not self.mini_game_active[4]) and (not self.mini_game_active[5]) and (not self.mini_game_active[6]) and (not self.mini_game_active[7]) and (not self.mini_game_active[8])) and self.player.rect.center[0] >= 3080 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] == 78)) and pygame.key.get_pressed()[pygame.K_PERIOD]:
 			final_score = mini_game_main()
 			self.mini_game_active[self.get_mini_game_number(self.player.rect.center)] = False
-			self.player.rect.center = (self.player.rect.center[0] - 25, self.player.rect.center[1] - 25)
+			self.player.rect.center = (self.player.rect.center[0], self.player.rect.center[1])
 			if final_score >= 10:
 				self.player.exp += 10
 				self.player.high -= 10
@@ -179,8 +179,6 @@ class Level:
 			# Process the score from the mini-game if needed
 			print("Final Score from Mini-Game:", final_score)
 			print(self.mini_game_active)
-
-
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
@@ -212,17 +210,17 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.calculate_offset(player)
 
         # Draw meters
-        health_meter_rect = pygame.Rect(100, 10, player.health, 20)
+        health_meter_rect = pygame.Rect(40, 10, player.health * 2.5, 20)
         pygame.draw.rect(self.display_surface, (255, 0, 0), health_meter_rect)
 
-        high_o_meter_rect = pygame.Rect(100, 40, player.high, 20)
+        high_o_meter_rect = pygame.Rect(40, 40, player.high * 2.5, 20)
         pygame.draw.rect(self.display_surface, (0, 255, 0), high_o_meter_rect)
 
-        exp_meter_rect = pygame.Rect(100, 70, player.exp, 20)
+        exp_meter_rect = pygame.Rect(40, 70, player.exp * 2.5, 20)
         pygame.draw.rect(self.display_surface, (0, 0, 255), exp_meter_rect)
 
         self.font_path = os.path.join(os.path.dirname(__file__), "pixel_font.ttf")
-        font = pygame.font.SysFont(self.font_path, 42)  # Load font
+        font = pygame.font.SysFont(self.font_path, 42)
         strr= str(player.health)
         health_text = font.render(strr, True, (255, 255, 255))
         self.display_surface.blit(health_text, (health_meter_rect.right + 10, health_meter_rect.top))
@@ -237,4 +235,3 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in self.sprites():
             if isinstance(sprite, Player):
                 sprite.attack()
-        
