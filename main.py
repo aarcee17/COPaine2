@@ -45,17 +45,39 @@ class Game:
 
     def run(self):
         self.run_intro()  # Run the intro animation
+
+        # Load the base tile image
+        base_tile = pygame.transform.scale(pygame.image.load("base.png"),(64,64))
+        base_tile_width, base_tile_height = base_tile.get_width(), base_tile.get_height()
+
+        # Create a surface to hold the tiled background
+        tiled_background = pygame.Surface((WIDTH, HEIGHT))
+
+        # Tile the background
+        for y in range(0, HEIGHT, base_tile_height):
+            for x in range(0, WIDTH, base_tile_width):
+                tiled_background.blit(base_tile, (x, y))
+
+        # Fill any remaining space on the right and bottom edges
+        for y in range(HEIGHT - base_tile_height, HEIGHT, base_tile_height):
+            tiled_background.blit(base_tile, (WIDTH - base_tile_width, y))
+
+        for x in range(WIDTH - base_tile_width, WIDTH, base_tile_width):
+            tiled_background.blit(base_tile, (x, HEIGHT - base_tile_height))
+
         # Transition to the main game loop
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
-            
-            self.screen.fill((0, 0, 0))  # Fill screen with black color
+
+            self.screen.blit(tiled_background, (0, 0))  # Draw the tiled background
             self.level.run()  # Run the main game loop
             pygame.display.update()
             self.clock.tick(FPS)
+
+
 
 if __name__ == "__main__":
     game = Game()
