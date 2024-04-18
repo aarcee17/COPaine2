@@ -22,10 +22,19 @@ class Level:
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.weapon_sprites = pygame.sprite.Group()
 
-		self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
-
+		# self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
+		self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
 		# sprite setup
 		self.create_map()
+    
+
+
+    # def is_complete(self):
+    #     if self.mini_game_active[-1]== True:
+    #         return True
+    #     else:
+    #         return False
+
 
 	def create_map(self):
 		layouts = {
@@ -121,12 +130,16 @@ class Level:
 		self.player = Player((200, 140), [self.visible_sprites], self.obstacle_sprites)
 
 	def run(self):
-		# update and draw the game
+        # update and draw the game
 		self.visible_sprites.custom_draw(self.player)
 		# debug([self.player.rect.center, self.player.health, self.player.high, self.player.exp])
 		self.visible_sprites.update()
-		
+
 		self.check_mini_game()
+   
+   
+
+
 
 
 	def get_mini_game_number(self, player_pos):
@@ -173,16 +186,19 @@ class Level:
 			# 	self.player.health += 10
 			self.visible_sprites.custom_draw(self.player)
 
-			# Reset screen dimensions
+            # Reset screen dimensions
 			self.display_surface = pygame.display.get_surface()
 			pygame.display.set_mode((WIDTH, HEIGHT))
 
-			# Restore the original caption
+            # Restore the original caption
 			pygame.display.set_caption(original_caption[0])
 
 			# Process the score from the mini-game if needed
 			print("Final Score from Mini-Game:", final_score)
 			print(self.mini_game_active)
+            
+	def is_complete(self):
+		return self.mini_game_active[-1] == False
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
@@ -239,3 +255,4 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in self.sprites():
             if isinstance(sprite, Player):
                 sprite.attack()
+    
