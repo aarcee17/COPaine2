@@ -19,7 +19,7 @@ class Level:
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.weapon_sprites = pygame.sprite.Group()
 
-		self.mini_game_active = [True, True, True, True, True]
+		self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
 
 		# sprite setup
 		self.create_map()
@@ -124,15 +124,30 @@ class Level:
 		self.visible_sprites.update()
 		
 		self.check_mini_game()
+  
+	def get_mini_game_number(self, player_pos):
+		x, y = player_pos[0], player_pos[1]
+		
+		# Define the conditions for each mini-game number
+		if x >= 9 and x <= 110 and y == 590:
+			return 0
+		elif x >= 1500 and x <= 1600 and y == 206:
+			return 1
+		elif x == 1888 and y <= 1450 and y >= 1350:
+			return 2
+		elif x >= 2900 and x <= 3000 and y == 590:
+			return 3
+		else:
+			return 4  # `Return None if no mini-game condition is met
 
 
 	def check_mini_game(self):
 		original_caption = pygame.display.get_caption()  # Store the original caption
 		
-		if ((self.player.rect.center[0] >= 9 and self.mini_game_active[0] and self.player.rect.center[0] <= 110 and self.player.rect.center[1] == 590 and self.player.currdir == "up") or (self.player.rect.center[0] >= 1600 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[1]) or (self.player.rect.center[0] == 1888 and self.player.rect.center[1] <= 1600 and self.player.rect.center[1] >= 206 and self.player.currdir == "up" and self.mini_game_active[2]) or (self.player.rect.center[0] >= 1600 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[3]) or (self.player.rect.center[0] >= 1600 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[4])):
+		if ((self.player.rect.center[0] >= 9 and self.mini_game_active[0] and self.player.rect.center[0] <= 110 and self.player.rect.center[1] == 590 and self.player.currdir == "up") or (self.player.rect.center[0] >= 1500 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[1]) or (self.player.rect.center[0] == 1888 and self.player.rect.center[1] <= 1450 and self.player.rect.center[1] >= 1350 and self.player.currdir == "right" and self.mini_game_active[2]) or (self.player.rect.center[0] >= 2900 and self.player.rect.center[0] <= 3000 and self.player.rect.center[1] == 590 and self.player.currdir == "up" and self.mini_game_active[3]) or (self.player.rect.center[0] >= 1600 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[4])) and pygame.key.get_pressed()[pygame.K_PERIOD]:
 			final_score = mini_game_main()
-			self.mini_game_active = False
-			self.player.rect.center = (200, 140)
+			self.mini_game_active[self.get_mini_game_number([self.player.rect.center[0], self.player.rect.center[1]])] = False
+			self.player.rect.center = (self.player.rect.center[0] - 25, self.player.rect.center[1] - 25)
 			# self.player = Player((200, 140), [self.visible_sprites], self.obstacle_sprites)  # Reset player position
 			# SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 			if final_score >= 10:
