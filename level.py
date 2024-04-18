@@ -161,7 +161,8 @@ class YSortCameraGroup(pygame.sprite.Group):
 
         self.font_path = os.path.join(os.path.dirname(__file__), "pixel_font.ttf")
         font = pygame.font.SysFont(self.font_path, 42)  # Load font
-        health_text = font.render("H", True, (255, 255, 255))
+        strr= str(player.health)
+        health_text = font.render(strr, True, (255, 255, 255))
         self.display_surface.blit(health_text, (health_meter_rect.right + 10, health_meter_rect.top))
 
         high_o_text = font.render("D", True, (255, 255, 255))
