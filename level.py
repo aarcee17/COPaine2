@@ -4,7 +4,7 @@ from tile import Tile
 from player import Player
 from debug import debug
 import pandas as pd
-
+import os
 def import_csv_layout(path):
     terrain_map = pd.read_csv(path, header=None).astype(str).values.tolist()
     return terrain_map
@@ -28,7 +28,7 @@ class Level:
 		}
 		mapItems = {
 			'1057': ['./CityTiles/(1,16).png','no'],
-			'604': ['./CityTiles/(0,7).png','no'],
+			'604': ['./graphics/test/cover.jpeg','no'],
 			'940': ['./graphics/test/road.png','no'],
 			'1295': ['./CityTiles/(40,20).png', 'no'],
 			'401': ['./CityTiles/(6,5).png'],
@@ -112,7 +112,9 @@ class Level:
 						else:
 							Tile((x,y),[self.visible_sprites, self.obstacle_sprites],mapItems[col][0])
 		self.player = Player((200,140),[self.visible_sprites],self.obstacle_sprites)
+        
 
+        
 	def run(self):
 		# update and draw the game
 		self.visible_sprites.custom_draw(self.player)
@@ -123,7 +125,7 @@ class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
         self.display_surface = pygame.display.get_surface()
-        self.half_width, self.half_height = self.display_surface.get_size()[0] // 2,self.display_surface.get_size()[1]//2
+        self.half_width, self.half_height = self.display_surface.get_size()[0] // 2, self.display_surface.get_size()[1] // 2
         self.offset = pygame.math.Vector2()
 
         self.floor_surf = pygame.image.load('./CityTiles/(1,16).png').convert_alpha()
@@ -140,7 +142,6 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.display_surface.blit(self.floor_surf, floor_offset_pos)
 
     def custom_draw(self, player):
-
         sorted_sprites = sorted(self.sprites(), key=lambda sprite: sprite.rect.centery)
         for sprite in sorted_sprites:
             offset_pos = sprite.rect.topleft - self.offset
@@ -148,3 +149,26 @@ class YSortCameraGroup(pygame.sprite.Group):
 
         self.draw_floor()
         self.calculate_offset(player)
+
+        # Draw meters
+        health_meter_rect = pygame.Rect(100, 10, player.health, 20)
+        pygame.draw.rect(self.display_surface, (255, 0, 0), health_meter_rect)
+
+        high_o_meter_rect = pygame.Rect(100, 40, player.high, 20)
+        pygame.draw.rect(self.display_surface, (0, 255, 0), high_o_meter_rect)
+
+        exp_meter_rect = pygame.Rect(100, 70, player.exp, 20)
+        pygame.draw.rect(self.display_surface, (0, 0, 255), exp_meter_rect)
+
+        self.font_path = os.path.join(os.path.dirname(__file__), "pixel_font.ttf")
+        font = pygame.font.SysFont(self.font_path, 42)  # Load font
+        health_text = font.render("H", True, (255, 255, 255))
+        self.display_surface.blit(health_text, (health_meter_rect.right + 10, health_meter_rect.top))
+
+        high_o_text = font.render("D", True, (255, 255, 255))
+        self.display_surface.blit(high_o_text, (high_o_meter_rect.right + 10, high_o_meter_rect.top))
+
+        exp_text = font.render("E", True, (255, 255, 255))
+        self.display_surface.blit(exp_text, (exp_meter_rect.right + 10, exp_meter_rect.top))
+
+        

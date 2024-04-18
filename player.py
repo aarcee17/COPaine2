@@ -38,16 +38,19 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         
         # Other attributes
-        self.base_speed = 1.5
+        self.base_speed = 6
         self.speed = self.base_speed
         self.obstacle_sprites = obstacle_sprites
         self.dodging = False
-        self.dodge_speed = 5
-        self.dodge_duration = 200
+        self.dodge_speed = 12
+        self.dodge_duration = 1000
         self.dodge_timer = 0
         self.state_timer = 0  # Timer for state switching
         self.state_interval = 250  # Interval for state switching in milliseconds
         self.hitbox = self.rect.inflate(0, -26)
+        self.health = 40
+        self.high = 40
+        self.exp = 40
 
     def input(self):
         keys = pg.key.get_pressed()
@@ -130,3 +133,23 @@ class Player(pg.sprite.Sprite):
                         self.hitbox.bottom = sprite.hitbox.top
                     elif self.direction.y < 0: # moving up
                         self.hitbox.top = sprite.hitbox.bottom
+
+    def draw_health_meter(self, screen):
+        health_bar_width = 100
+        health_bar_height = 10
+        health_bar = pygame.Rect(10, 10, health_bar_width, health_bar_height)
+        pygame.draw.rect(screen, (255, 0, 0), health_bar)
+        current_health = min(max(self.health, 0), 100)
+        health_bar.width = health_bar_width * current_health / 100
+        pygame.draw.rect(screen, (0, 255, 0), health_bar)
+
+    def draw_high_o_meter(self, screen):
+        high_o_meter_height = 10
+        high_o_meter = pygame.Rect(10, 30, self.high_o_meter, high_o_meter_height)
+        pygame.draw.rect(screen, (255, 0, 0), high_o_meter)
+
+    def draw_exp_meter(self, screen):
+        exp_meter_width = 100
+        exp_meter_height = 10
+        exp_meter = pygame.Rect(WIDTH - 110, 10, exp_meter_width, exp_meter_height)
+        pygame.draw.rect(screen, (255, 255, 0), exp_meter)
