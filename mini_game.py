@@ -76,14 +76,12 @@ def spawn_fruits_and_bombs():
             bomb = Bomb()
             bombs.add(bomb)
             all_sprites.add(bomb)
-            
 
         yield all_sprites, fruits, bombs
-        time.sleep(4)
+        # time.sleep(4)
   # Wait for 4 seconds between batches
 
 def main():
-    pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Catch the Fruit")
     clock = pygame.time.Clock()
@@ -91,53 +89,57 @@ def main():
     basket = Basket()
 
     running = True
-    batch_generator = spawn_fruits_and_bombs()
-    for all_sprites, fruits, bombs in batch_generator:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                running = False
-
-        if not running:
-            break
-
-        all_sprites.add(basket)
-
-        score = 0
-        score_font = pygame.font.SysFont(None, 36)
-
-        while running:
+    score = 0
+    
+    while score < 10:
+        batch_generator = spawn_fruits_and_bombs()
+        for all_sprites, fruits, bombs in batch_generator:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     running = False
 
-            screen.fill(WHITE)
+            if not running:
+                break
 
-            all_sprites.update()
-            all_sprites.draw(screen)
+            all_sprites.add(basket)
 
-            # Check for collisions between basket and fruits
-            fruit_collisions = pygame.sprite.spritecollide(basket, fruits, True)
-            for fruit in fruit_collisions:
-                score += 10  # Increase score for catching fruit
+            score_font = pygame.font.SysFont(None, 36)
 
-            # Check for collisions between basket and bombs
-            bomb_collisions = pygame.sprite.spritecollide(basket, bombs, True)
-            for bomb in bomb_collisions:
-                score -= 20  # Decrease score for catching bomb
+            while running:
+                for event in pygame.event.get():
+                    if event.type == QUIT:
+                        running = False
 
-            # Render score
-            score_text = score_font.render("Score: {}".format(score), True, BLACK)
-            screen.blit(score_text, (10, 10))
+                screen.fill(WHITE)
 
-            # Check winning condition
-            if score >= 100:
-                # Player wins
-                return score
+                all_sprites.update()
+                all_sprites.draw(screen)
 
-            pygame.display.flip()
-            clock.tick(60)
+                # Check for collisions between basket and fruits
+                fruit_collisions = pygame.sprite.spritecollide(basket, fruits, True)
+                for _ in fruit_collisions:
+                    score += 10  # Increase score for catching fruit
 
-    pygame.quit()
+                # Check for collisions between basket and bombs
+                bomb_collisions = pygame.sprite.spritecollide(basket, bombs, True)
+                for _ in bomb_collisions:
+                    score -= 20  # Decrease score for catching bomb
+
+                # Render score
+                score_text = score_font.render("Score: {}".format(score), True, BLACK)
+                screen.blit(score_text, (10, 10))
+
+                # Check winning condition
+                if score >= 10:
+                    # Player wins
+                    # pygame.quit()
+                    return score
+
+                pygame.display.flip()
+                clock.tick(60)
+
+    # pygame.quit()
+
 
 if __name__ == "__main__":
     final_score = main()

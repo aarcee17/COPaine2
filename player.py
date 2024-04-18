@@ -92,6 +92,7 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         self.input()
+        
 
         if not self.attacking:
             if self.dodging:
@@ -116,6 +117,15 @@ class Player(pg.sprite.Sprite):
         self.rectify('y', speed)
         self.collision('vertical')
         self.rect.center = self.hitbox.center
+        if self.rect.center[0] < 0:
+            self.rect.center = (0, self.rect.center[1])
+        elif self.rect.center[0] > 3200:
+            self.rect.center = (3200, self.rect.center[1])
+        if self.rect.center[1] < -50:
+            self.rect.center = (self.rect.center[0], -50)
+        elif self.rect.center[1] > 1500:
+            self.rect.center = (self.rect.center[0], 1500)
+        self.hitbox.center = self.rect.center
         
     def rectify(self, axis, speed):
         if axis == 'x':
