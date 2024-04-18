@@ -140,7 +140,6 @@ def main():
 
     # pygame.quit()
 
-
 if __name__ == "__main__":
     final_score = main()
     print("Final Score:", final_score)
