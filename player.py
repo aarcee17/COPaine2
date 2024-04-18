@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+from attack import Weapon
 
 class Player(pg.sprite.Sprite):
     def __init__(self, pos, groups, obstacle_sprites):
@@ -51,6 +52,7 @@ class Player(pg.sprite.Sprite):
         self.health = 40
         self.high = 40
         self.exp = 40
+        self.attacking = False
 
     def input(self):
         keys = pg.key.get_pressed()
@@ -79,24 +81,28 @@ class Player(pg.sprite.Sprite):
         if keys[pg.K_SPACE]:
             self.start_dodge()
 
-
     def start_dodge(self):
         self.dodging = True
         self.dodge_timer = pg.time.get_ticks()
 
+    def attack(self):
+        if pg.key.get_pressed()[pg.K_x]:
+            self.attacking = True
+            Weapon(self, [self.groups()[0]])
+
     def update(self):
         self.input()
 
-        if self.dodging:
-            self.move(self.dodge_speed)
-            if pg.time.get_ticks() - self.dodge_timer >= self.dodge_duration:
-                self.dodging = False
-        else:
-            self.move(self.speed)
-
+        if not self.attacking:
+            if self.dodging:
+                self.move(self.dodge_speed)
+                if pg.time.get_ticks() - self.dodge_timer >= self.dodge_duration:
+                    self.dodging = False
+            else:
+                self.move(self.speed)
         # Check if it's time to switch the state (only if moving)
         if self.direction.x != 0 or self.direction.y != 0:
-            if pg.time.get_ticks() - self.state_timer >= self.state_interval:
+            if pg.time.get_ticks() - self.state_timer >= self.state_interval and not self.attacking:
                 self.state = 'lleg' if self.state == 'rleg' else 'rleg'
                 self.state_timer = pg.time.get_ticks()
 
@@ -110,7 +116,7 @@ class Player(pg.sprite.Sprite):
         self.rectify('y', speed)
         self.collision('vertical')
         self.rect.center = self.hitbox.center
-		
+        
     def rectify(self, axis, speed):
         if axis == 'x':
             self.hitbox.x += self.direction.x * speed
