@@ -3,6 +3,12 @@ from settings import *
 from level import Level
 from level0 import Level0  # Import Level0 from level0.py
 
+def apply_filter(screen, filter_color, alpha):
+    filter_surface = pygame.Surface(screen.get_size())  # Create a surface with the same size as the screen
+    filter_surface.set_alpha(alpha)  # Set the transparency level of the filter surface
+    filter_surface.fill(filter_color)  # Fill the filter surface with the filter color
+    screen.blit(filter_surface, (0, 0))  # Blit the filter surface onto the screen
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -24,7 +30,11 @@ class Game:
                     if event.key == pygame.K_SPACE:
                         self.intro.next_slide()  # Move to the next slide on spacebar press
             
-            self.screen.fill((0, 0, 0))  # Fill screen with black color
+            self.screen.fill((0, 3, 54))  # Fill screen with black color
+            
+            # Apply the filter with a specific color (e.g., black) and transparency level (e.g., 128)
+            apply_filter(self.screen, (22, 34, 54), 63)
+            
             self.intro.run()  # Run the current slide of the intro animation
             pygame.display.update()
             self.clock.tick(FPS)

@@ -28,7 +28,7 @@ class Level:
 		}
 		mapItems = {
 			'1057': ['./CityTiles/(1,16).png','no'],
-			'604': ['./CityTiles/(0,7).png','no'],
+			'604': ['./graphics/test/cover.jpeg','no'],
 			'940': ['./graphics/test/road.png','no'],
 			'1295': ['./CityTiles/(40,20).png', 'no'],
 			'401': ['./CityTiles/(6,5).png'],
