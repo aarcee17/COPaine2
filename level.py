@@ -11,174 +11,190 @@ def import_csv_layout(path):
     return terrain_map
 
 class Level:
-	def __init__(self):
-		self.display_surface = pygame.display.get_surface()
+    def __init__(self):
+        self.display_surface = pygame.display.get_surface()
 
-		# sprite group setup
-		self.visible_sprites = YSortCameraGroup()
-		self.obstacle_sprites = pygame.sprite.Group()
-		self.weapon_sprites = pygame.sprite.Group()
+        # sprite group setup
+        self.visible_sprites = YSortCameraGroup()
+        self.obstacle_sprites = pygame.sprite.Group()
+        self.weapon_sprites = pygame.sprite.Group()
 
-		self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
-
-		# sprite setup
-		self.create_map()
-
-	def create_map(self):
-		layouts = {
-			'base': import_csv_layout('./map/DrugMap_Base.csv'),
-			'road': import_csv_layout('./map/DrugMap_Roads.csv'),
-			'homes': import_csv_layout('./map/DrugMap_Homes.csv')
-		}
-		mapItems = {
-			'1057': ['./CityTiles/(1,16).png','no'],
-			'604': ['./graphics/test/cover.jpeg','no'],
-			'940': ['./graphics/test/road.png','no'],
-			'1295': ['./CityTiles/(40,20).png', 'no'],
-			'401': ['./CityTiles/(6,5).png'],
-			'1084': ['./CityTiles/(2,3).png'],
-			'4': ['./Machine/(4,0).png'],
-			'5': ['./Machine/(5,0).png'],
-			'12': ['./Machine/(4,1).png'],
-			'13': ['./Machine/(5,1).png'],
-			'20': ['./Machine/(4,2).png'],
-			'21': ['./Machine/(5,2).png'],
-			'28': ['./Machine/(4,3).png'],
-			'29': ['./Machine/(5,3).png'],
-			'203': ['./CityTiles/(5,3).png'],
-			'823': ['./CityTiles/(31,12).png'],
-			'824': ['./CityTiles/(32,12).png'],
-			'889': ['./CityTiles/(31,13).png'],
-			'890': ['./CityTiles/(32,13).png'],
-			'1326': ['./CityTiles/(0,7).png', 'no'],
-			'1004': ['./CityTiles/(0,7).png', 'no'],
-			'1077': ['./CityTiles/(21,16).png'],
-			'1078': ['./CityTiles/(22,16).png'],
-			'1079': ['./CityTiles/(23,16).png'],
-			'1080': ['./CityTiles/(24,16).png'],
-			'1204': ['./CityTiles/(16,18).png'],
-			'1270': ['./CityTiles/(16,19).png'],
-			'925': ['./CityTiles/(0,7).png'],
-			'1200': ['./CityTiles/(12,18).png'],
-			'1201': ['./CityTiles/(13,18).png'],
-			'1202': ['./CityTiles/(14,18).png'],
-			'1203': ['./CityTiles/(15,18).png'],
-			'1266': ['./CityTiles/(12,19).png'],
-			'1267': ['./CityTiles/(13,19).png'],
-			'1268': ['./CityTiles/(14,19).png'],
-			'1269': ['./CityTiles/(15,19).png'],
-			'927': ['./CityTiles/(3,14).png'],
-			'67': ['./CityTiles/(1,1).png'],
-			'68': ['./CityTiles/(2,1).png'],
-			'475': ['./CityTiles/(13,7).png'],
-			'541': ['./CityTiles/(13,8).png'],
-			'2': ['./Machine/(2,0).png'],
-			'3': ['./Machine/(3,0).png'],
-			'10': ['./Machine/(2,1).png'],
-			'11': ['./Machine/(3,1).png'],
-			'18': ['./Machine/(2,2).png'],
-			'19': ['./Machine/(3,2).png'],
-			'26': ['./Machine/(2,3).png'],
-			'27': ['./Machine/(3,3).png'],
-			'599': ['./CityTiles/(5,9).png', 'no'],
-			'680': ['./CityTiles/(20,10).png'],
-			'36': ['./Machine/(6,4).png'],
-			'37': ['./Machine/(7,4).png'],
-			'44': ['./Machine/(6,5).png'],
-			'45': ['./Machine/(7,5).png'],
-			'52': ['./Machine/(6,6).png'],
-			'53': ['./Machine/(7,6).png'],
-			'60': ['./Machine/(6,7).png'],
-			'61': ['./Machine/(7,7).png'],
-			'232': ['./CityTiles/(34,3).png'],
-			'298': ['./CityTiles/(34,4).png'],
-			'32': ['./Machine/(0,4).png'],
-			'33': ['./Machine/(1,4).png'],
-			'40': ['./Machine/(0,5).png'],
-			'41': ['./Machine/(1,5).png'],
-			'48': ['./Machine/(0,6).png'],
-			'49': ['./Machine/(1,6).png'],
-			'56': ['./Machine/(0,7).png'],
-			'57': ['./Machine/(1,7).png'],
-			'800': ['./CityTiles/(8,12).png'],
-			'801': ['./CityTiles/(9,12).png'],
-			'866': ['./CityTiles/(8,13).png'],
-			'867': ['./CityTiles/(9,13).png'],
-		}
-		for style, layout in layouts.items():
-			for row_index, row in enumerate(layout):
-				for col_index, col in enumerate(row):
-					if col != '-1':
-						x = col_index * TILESIZE
-						y = row_index * TILESIZE
-						if len(mapItems[col]) > 1:
-							Tile((x, y), [self.visible_sprites], mapItems[col][0])
-						else:
-							Tile((x, y), [self.visible_sprites, self.obstacle_sprites], mapItems[col][0])
-		self.player = Player((200, 140), [self.visible_sprites], self.obstacle_sprites)
-
-	def run(self):
-		# update and draw the game
-		self.visible_sprites.custom_draw(self.player)
-		# debug([self.player.rect.center, self.player.health, self.player.high, self.player.exp])
-		self.visible_sprites.update()
-		
-		self.check_mini_game()
-
-	def get_mini_game_number(self, player_pos):
-		x, y = player_pos[0], player_pos[1]
+        # self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
+        self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
+        # sprite setup
+        self.create_map()
     
-		mini_game_conditions = [
-			# Condition 0
-			x >= 9 and x <= 110 and y == 590,
-			# Condition 1
-			x >= 1500 and x <= 1600 and y == 206,
-			# Condition 2
-			x == 1888 and y >= 1350 and y <= 1450,
-			# Condition 3
-			x >= 2900 and x <= 3000 and y == 590,
-			# Condition 4
-			x >= 3000 and x <= 3200 and y >= 1000 and y <= 1400,
-			# Condition 5
-			x == 2528 and y >= 1350 and y <= 1440,
-			# Condition 6
-			x >= 2050 and x <= 2400 and y >= 35 and y <= 50,
-			# Condition 7
-			x == 1632 and y >= 380 and y <= 480,
-			# Condition 8
-			y == 1422 and x >= 270 and x <= 370,
-			# Condition 9
-			y == 78 and x >= 3080 and x <= 3200
-		]
-		
-		for game_number, condition in enumerate(mini_game_conditions):
-			if condition:
-				return game_number
 
 
-	def check_mini_game(self):
-		original_caption = pygame.display.get_caption()  # Store the original caption
-		
-		if ((self.player.rect.center[0] >= 9 and self.mini_game_active[0] and self.player.rect.center[0] <= 110 and self.player.rect.center[1] == 590 and self.player.currdir == "up") or (self.player.rect.center[0] >= 1500 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[1]) or (self.player.rect.center[0] == 1888 and self.player.rect.center[1] <= 1450 and self.player.rect.center[1] >= 1350 and self.player.currdir == "right" and self.mini_game_active[2]) or (self.player.rect.center[0] >= 2900 and self.player.rect.center[0] <= 3000 and self.player.rect.center[1] == 590 and self.player.currdir == "up" and self.mini_game_active[3]) or (self.player.rect.center[0] >= 3000 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] >= 1000 and self.player.rect.center[1] <= 1400 and self.mini_game_active[4]) or (self.player.rect.center[0] == 2528 and self.player.rect.center[1] >= 1350 and self.player.rect.center[1] <= 1440 and self.mini_game_active[5]) or (self.player.rect.center[0] >= 2050 and self.player.rect.center[0] <= 2400 and self.player.rect.center[1] >= 35 and self.player.rect.center[1] <= 50 and self.mini_game_active[6]) or (self.player.rect.center[0] == 1632 and self.player.rect.center[1] >= 380 and self.player.rect.center[1] <= 480 and self.mini_game_active[6]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[7]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[8]) or (((not self.mini_game_active[0]) and (not self.mini_game_active[1]) and (not self.mini_game_active[2]) and (not self.mini_game_active[3]) and (not self.mini_game_active[4]) and (not self.mini_game_active[5]) and (not self.mini_game_active[6]) and (not self.mini_game_active[7]) and (not self.mini_game_active[8])) and self.player.rect.center[0] >= 3080 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] == 78)) and pygame.key.get_pressed()[pygame.K_PERIOD]:
-			final_score = mini_game_main()
-			self.mini_game_active[self.get_mini_game_number(self.player.rect.center)] = False
-			self.player.rect.center = (self.player.rect.center[0], self.player.rect.center[1])
-			if final_score >= 10:
-				self.player.exp += 10
-				self.player.high -= 10
-				self.player.health += 10
-			self.visible_sprites.custom_draw(self.player)
+    # def is_complete(self):
+    #     if self.mini_game_active[-1]== True:
+    #         return True
+    #     else:
+    #         return False
 
-			# Reset screen dimensions
-			self.display_surface = pygame.display.get_surface()
-			pygame.display.set_mode((WIDTH, HEIGHT))
+    
+    def create_map(self):
+        layouts = {
+            'base': import_csv_layout('./map/DrugMap_Base.csv'),
+            'road': import_csv_layout('./map/DrugMap_Roads.csv'),
+            'homes': import_csv_layout('./map/DrugMap_Homes.csv')
+        }
+        mapItems = {
+            '1057': ['./CityTiles/(1,16).png','no'],
+            '604': ['./graphics/test/cover.jpeg','no'],
+            '940': ['./graphics/test/road.png','no'],
+            '1295': ['./CityTiles/(40,20).png', 'no'],
+            '401': ['./CityTiles/(6,5).png'],
+            '1084': ['./CityTiles/(2,3).png'],
+            '4': ['./Machine/(4,0).png'],
+            '5': ['./Machine/(5,0).png'],
+            '12': ['./Machine/(4,1).png'],
+            '13': ['./Machine/(5,1).png'],
+            '20': ['./Machine/(4,2).png'],
+            '21': ['./Machine/(5,2).png'],
+            '28': ['./Machine/(4,3).png'],
+            '29': ['./Machine/(5,3).png'],
+            '203': ['./CityTiles/(5,3).png'],
+            '823': ['./CityTiles/(31,12).png'],
+            '824': ['./CityTiles/(32,12).png'],
+            '889': ['./CityTiles/(31,13).png'],
+            '890': ['./CityTiles/(32,13).png'],
+            '1326': ['./CityTiles/(0,7).png', 'no'],
+            '1004': ['./CityTiles/(0,7).png', 'no'],
+            '1077': ['./CityTiles/(21,16).png'],
+            '1078': ['./CityTiles/(22,16).png'],
+            '1079': ['./CityTiles/(23,16).png'],
+            '1080': ['./CityTiles/(24,16).png'],
+            '1204': ['./CityTiles/(16,18).png'],
+            '1270': ['./CityTiles/(16,19).png'],
+            '925': ['./CityTiles/(0,7).png'],
+            '1200': ['./CityTiles/(12,18).png'],
+            '1201': ['./CityTiles/(13,18).png'],
+            '1202': ['./CityTiles/(14,18).png'],
+            '1203': ['./CityTiles/(15,18).png'],
+            '1266': ['./CityTiles/(12,19).png'],
+            '1267': ['./CityTiles/(13,19).png'],
+            '1268': ['./CityTiles/(14,19).png'],
+            '1269': ['./CityTiles/(15,19).png'],
+            '927': ['./CityTiles/(3,14).png'],
+            '67': ['./CityTiles/(1,1).png'],
+            '68': ['./CityTiles/(2,1).png'],
+            '475': ['./CityTiles/(13,7).png'],
+            '541': ['./CityTiles/(13,8).png'],
+            '2': ['./Machine/(2,0).png'],
+            '3': ['./Machine/(3,0).png'],
+            '10': ['./Machine/(2,1).png'],
+            '11': ['./Machine/(3,1).png'],
+            '18': ['./Machine/(2,2).png'],
+            '19': ['./Machine/(3,2).png'],
+            '26': ['./Machine/(2,3).png'],
+            '27': ['./Machine/(3,3).png'],
+            '599': ['./CityTiles/(5,9).png', 'no'],
+            '680': ['./CityTiles/(20,10).png'],
+            '36': ['./Machine/(6,4).png'],
+            '37': ['./Machine/(7,4).png'],
+            '44': ['./Machine/(6,5).png'],
+            '45': ['./Machine/(7,5).png'],
+            '52': ['./Machine/(6,6).png'],
+            '53': ['./Machine/(7,6).png'],
+            '60': ['./Machine/(6,7).png'],
+            '61': ['./Machine/(7,7).png'],
+            '232': ['./CityTiles/(34,3).png'],
+            '298': ['./CityTiles/(34,4).png'],
+            '32': ['./Machine/(0,4).png'],
+            '33': ['./Machine/(1,4).png'],
+            '40': ['./Machine/(0,5).png'],
+            '41': ['./Machine/(1,5).png'],
+            '48': ['./Machine/(0,6).png'],
+            '49': ['./Machine/(1,6).png'],
+            '56': ['./Machine/(0,7).png'],
+            '57': ['./Machine/(1,7).png'],
+            '800': ['./CityTiles/(8,12).png'],
+            '801': ['./CityTiles/(9,12).png'],
+            '866': ['./CityTiles/(8,13).png'],
+            '867': ['./CityTiles/(9,13).png'],
+        }
+        for style, layout in layouts.items():
+            for row_index, row in enumerate(layout):
+                for col_index, col in enumerate(row):
+                    if col != '-1':
+                        x = col_index * TILESIZE
+                        y = row_index * TILESIZE
+                        if len(mapItems[col]) > 1:
+                            Tile((x, y), [self.visible_sprites], mapItems[col][0])
+                        else:
+                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], mapItems[col][0])
+        self.player = Player((200, 140), [self.visible_sprites], self.obstacle_sprites)
 
-			# Restore the original caption
-			pygame.display.set_caption(original_caption[0])
+    def run(self):
+        # update and draw the game
+        self.visible_sprites.custom_draw(self.player)
+        # debug([self.player.rect.center, self.player.health, self.player.high, self.player.exp])
+        self.visible_sprites.update()
+        
+        self.check_mini_game()
+   
+   
 
-			# Process the score from the mini-game if needed
-			print("Final Score from Mini-Game:", final_score)
-			print(self.mini_game_active)
+
+
+    def get_mini_game_number(self, player_pos):
+        x, y = player_pos[0], player_pos[1]
+
+        mini_game_conditions = [
+            # Condition 0
+            x >= 9 and x <= 110 and y == 590,
+            # Condition 1
+            x >= 1500 and x <= 1600 and y == 206,
+            # Condition 2
+            x == 1888 and y >= 1350 and y <= 1450,
+            # Condition 3
+            x >= 2900 and x <= 3000 and y == 590,
+            # Condition 4
+            x >= 3000 and x <= 3200 and y >= 1000 and y <= 1400,
+            # Condition 5
+            x == 2528 and y >= 1350 and y <= 1440,
+            # Condition 6
+            x >= 2050 and x <= 2400 and y >= 35 and y <= 50,
+            # Condition 7
+            x == 1632 and y >= 380 and y <= 480,
+            # Condition 8
+            y == 1422 and x >= 270 and x <= 370,
+            # Condition 9
+            y == 78 and x >= 3080 and x <= 3200
+        ]
+        
+        for game_number, condition in enumerate(mini_game_conditions):
+            if condition:
+                return game_number
+
+
+    def check_mini_game(self):
+        original_caption = pygame.display.get_caption()  # Store the original caption
+        
+        if ((self.player.rect.center[0] >= 9 and self.mini_game_active[0] and self.player.rect.center[0] <= 110 and self.player.rect.center[1] == 590 and self.player.currdir == "up") or (self.player.rect.center[0] >= 1500 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[1]) or (self.player.rect.center[0] == 1888 and self.player.rect.center[1] <= 1450 and self.player.rect.center[1] >= 1350 and self.player.currdir == "right" and self.mini_game_active[2]) or (self.player.rect.center[0] >= 2900 and self.player.rect.center[0] <= 3000 and self.player.rect.center[1] == 590 and self.player.currdir == "up" and self.mini_game_active[3]) or (self.player.rect.center[0] >= 3000 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] >= 1000 and self.player.rect.center[1] <= 1400 and self.mini_game_active[4]) or (self.player.rect.center[0] == 2528 and self.player.rect.center[1] >= 1350 and self.player.rect.center[1] <= 1440 and self.mini_game_active[5]) or (self.player.rect.center[0] >= 2050 and self.player.rect.center[0] <= 2400 and self.player.rect.center[1] >= 35 and self.player.rect.center[1] <= 50 and self.mini_game_active[6]) or (self.player.rect.center[0] == 1632 and self.player.rect.center[1] >= 380 and self.player.rect.center[1] <= 480 and self.mini_game_active[6]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[7]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[8]) or (((not self.mini_game_active[0]) and (not self.mini_game_active[1]) and (not self.mini_game_active[2]) and (not self.mini_game_active[3]) and (not self.mini_game_active[4]) and (not self.mini_game_active[5]) and (not self.mini_game_active[6]) and (not self.mini_game_active[7]) and (not self.mini_game_active[8])) and self.player.rect.center[0] >= 3080 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] == 78)) and pygame.key.get_pressed()[pygame.K_PERIOD]:
+            final_score = mini_game_main()
+            self.mini_game_active[self.get_mini_game_number(self.player.rect.center)] = False
+            self.player.rect.center = (self.player.rect.center[0], self.player.rect.center[1])
+            if final_score >= 10:
+                self.player.exp += 10
+                self.player.high -= 10
+
+            self.visible_sprites.custom_draw(self.player)
+
+            # Reset screen dimensions
+            self.display_surface = pygame.display.get_surface()
+            pygame.display.set_mode((WIDTH, HEIGHT))
+
+            # Restore the original caption
+            pygame.display.set_caption(original_caption[0])
+
+            # Process the score from the mini-game if needed
+            print("Final Score from Mini-Game:", final_score)
+            print(self.mini_game_active)
+            
+    def is_complete(self):
+        return self.mini_game_active[-1] == False
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
@@ -235,3 +251,4 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in self.sprites():
             if isinstance(sprite, Player):
                 sprite.attack()
+    

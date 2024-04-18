@@ -17,7 +17,9 @@ class Levelf:
             {"image": "outrologi/image6.png", "text": "But know this, my child, you are not alone. We are here for you, waiting with open arms and unconditional love, ready to help you find your way back home."},
             {"image": "outrologi/image7.png", "text": "COME BACK TO US"},
             {"image": "outrologi/image7.png", "text": "COME BACK TO US", "font_size": 48},  # Bigger font size
-            {"image": "black.jpeg", "text": "The end"}
+            {"image": "black.jpeg", "text": "The end","font_size": 96},
+            {"image": "black.jpeg", "text": ""}
+            
         ]
 
         self.current_slide = 0  # Index of the current slide
