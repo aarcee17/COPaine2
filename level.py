@@ -6,6 +6,9 @@ from debug import debug
 import pandas as pd
 import os
 from mini_game import main as mini_game_main
+from two64 import main as two64_main
+from tictactoe import main as tictactoe_main
+
 def import_csv_layout(path):
     terrain_map = pd.read_csv(path, header=None).astype(str).values.tolist()
     return terrain_map
@@ -125,6 +128,7 @@ class Level:
 		
 		self.check_mini_game()
 
+
 	def get_mini_game_number(self, player_pos):
 		x, y = player_pos[0], player_pos[1]
     
@@ -155,18 +159,18 @@ class Level:
 			if condition:
 				return game_number
 
-
 	def check_mini_game(self):
 		original_caption = pygame.display.get_caption()  # Store the original caption
 		
 		if ((self.player.rect.center[0] >= 9 and self.mini_game_active[0] and self.player.rect.center[0] <= 110 and self.player.rect.center[1] == 590 and self.player.currdir == "up") or (self.player.rect.center[0] >= 1500 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[1]) or (self.player.rect.center[0] == 1888 and self.player.rect.center[1] <= 1450 and self.player.rect.center[1] >= 1350 and self.player.currdir == "right" and self.mini_game_active[2]) or (self.player.rect.center[0] >= 2900 and self.player.rect.center[0] <= 3000 and self.player.rect.center[1] == 590 and self.player.currdir == "up" and self.mini_game_active[3]) or (self.player.rect.center[0] >= 3000 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] >= 1000 and self.player.rect.center[1] <= 1400 and self.mini_game_active[4]) or (self.player.rect.center[0] == 2528 and self.player.rect.center[1] >= 1350 and self.player.rect.center[1] <= 1440 and self.mini_game_active[5]) or (self.player.rect.center[0] >= 2050 and self.player.rect.center[0] <= 2400 and self.player.rect.center[1] >= 35 and self.player.rect.center[1] <= 50 and self.mini_game_active[6]) or (self.player.rect.center[0] == 1632 and self.player.rect.center[1] >= 380 and self.player.rect.center[1] <= 480 and self.mini_game_active[6]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[7]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[8]) or (((not self.mini_game_active[0]) and (not self.mini_game_active[1]) and (not self.mini_game_active[2]) and (not self.mini_game_active[3]) and (not self.mini_game_active[4]) and (not self.mini_game_active[5]) and (not self.mini_game_active[6]) and (not self.mini_game_active[7]) and (not self.mini_game_active[8])) and self.player.rect.center[0] >= 3080 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] == 78)) and pygame.key.get_pressed()[pygame.K_PERIOD]:
-			final_score = mini_game_main()
+			# two64_main()
+			final_score = tictactoe_main()
 			self.mini_game_active[self.get_mini_game_number(self.player.rect.center)] = False
 			self.player.rect.center = (self.player.rect.center[0], self.player.rect.center[1])
-			if final_score >= 10:
-				self.player.exp += 10
-				self.player.high -= 10
-				self.player.health += 10
+			# if final_score >= 10:
+			# 	self.player.exp += 10
+			# 	self.player.high -= 10
+			# 	self.player.health += 10
 			self.visible_sprites.custom_draw(self.player)
 
 			# Reset screen dimensions
