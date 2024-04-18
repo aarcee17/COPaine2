@@ -137,19 +137,19 @@ class Player(pg.sprite.Sprite):
     def draw_health_meter(self, screen):
         health_bar_width = 100
         health_bar_height = 10
-        health_bar = pygame.Rect(10, 10, health_bar_width, health_bar_height)
-        pygame.draw.rect(screen, (255, 0, 0), health_bar)
+        health_bar = pg.Rect(10, 10, health_bar_width, health_bar_height)
+        pg.draw.rect(screen, (255, 0, 0), health_bar)
         current_health = min(max(self.health, 0), 100)
         health_bar.width = health_bar_width * current_health / 100
-        pygame.draw.rect(screen, (0, 255, 0), health_bar)
+        pg.draw.rect(screen, (0, 255, 0), health_bar)
 
     def draw_high_o_meter(self, screen):
         high_o_meter_height = 10
-        high_o_meter = pygame.Rect(10, 30, self.high_o_meter, high_o_meter_height)
-        pygame.draw.rect(screen, (255, 0, 0), high_o_meter)
+        high_o_meter = pg.Rect(10, 30, self.high_o_meter, high_o_meter_height)
+        pg.draw.rect(screen, (255, 0, 0), high_o_meter)
 
     def draw_exp_meter(self, screen):
         exp_meter_width = 100
         exp_meter_height = 10
-        exp_meter = pygame.Rect(WIDTH - 110, 10, exp_meter_width, exp_meter_height)
-        pygame.draw.rect(screen, (255, 255, 0), exp_meter)
+        exp_meter = pg.Rect(WIDTH - 110, 10, exp_meter_width, exp_meter_height)
+        pg.draw.rect(screen, (255, 255, 0), exp_meter)
