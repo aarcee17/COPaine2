@@ -4,35 +4,78 @@ from settings import *
 class Player(pg.sprite.Sprite):
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
-        self.image = pg.transform.scale(pg.image.load('./graphics/test/player.png').convert_alpha(), (64, 64))
-        self.rect = self.image.get_rect(topleft=pos)
+        
+        # Load images for each direction and state
+        self.images = {
+            'left': {
+                'lleg': pg.transform.scale(pg.image.load('./graphics/player/leftlleg.png').convert_alpha(), (64, 64)),
+                'rleg': pg.transform.scale(pg.image.load('./graphics/player/leftrleg.png').convert_alpha(), (64, 64)),
+                'idle': pg.transform.scale(pg.image.load('./graphics/player/leftidle.png').convert_alpha(), (64, 64))
+            },
+            'right': {
+                'lleg': pg.transform.scale(pg.image.load('./graphics/player/rightlleg.png').convert_alpha(), (64, 64)),
+                'rleg': pg.transform.scale(pg.image.load('./graphics/player/rightrleg.png').convert_alpha(), (64, 64)),
+                'idle': pg.transform.scale(pg.image.load('./graphics/player/rightidle.png').convert_alpha(), (64, 64))
+            },
+            'up': {
+                'lleg': pg.transform.scale(pg.image.load('./graphics/player/uplleg.png').convert_alpha(), (64, 64)),
+                'rleg': pg.transform.scale(pg.image.load('./graphics/player/uprleg.png').convert_alpha(), (64, 64)),
+                'idle': pg.transform.scale(pg.image.load('./graphics/player/upidle.png').convert_alpha(), (64, 64))
+            },
+            'down': {
+                'lleg': pg.transform.scale(pg.image.load('./graphics/player/downlleg.png').convert_alpha(), (64, 64)),
+                'rleg': pg.transform.scale(pg.image.load('./graphics/player/downrleg.png').convert_alpha(), (64, 64)),
+                'idle': pg.transform.scale(pg.image.load('./graphics/player/downidle.png').convert_alpha(), (64, 64))
+            }
+        }
+        
+        self.currdir = 'right'
         self.direction = pg.math.Vector2()
-        self.base_speed = 1.5  # Define the base speed
-        self.speed = self.base_speed  # Set the initial speed to the base speed
+        self.direction.x = 1  # Initial direction
+        self.direction.y = 0
+        self.state = 'idle'  # Initial state
+        self.image = self.images[self.currdir][self.state]
+        self.rect = self.image.get_rect(topleft=pos)
+        
+        # Other attributes
+        self.base_speed = 1.5
+        self.speed = self.base_speed
         self.obstacle_sprites = obstacle_sprites
         self.dodging = False
-        self.dodge_speed = 5  # Define the dodge speed
-        self.dodge_duration = 200  # Duration of the dodge in milliseconds
-        self.dodge_timer = 0  # Timer to track dodge duration
-        self.hitbox = self.rect.inflate(0,-26)
+        self.dodge_speed = 5
+        self.dodge_duration = 200
+        self.dodge_timer = 0
+        self.state_timer = 0  # Timer for state switching
+        self.state_interval = 250  # Interval for state switching in milliseconds
+        self.hitbox = self.rect.inflate(0, -26)
 
     def input(self):
         keys = pg.key.get_pressed()
-        # Check if shift is pressed to adjust speed
         if keys[pg.K_LSHIFT] or keys[pg.K_RSHIFT]:
-            self.speed = self.base_speed * 1.5  # Double the speed
+            self.speed = self.base_speed * 1.5
         else:
-            self.speed = self.base_speed  # Reset speed to base speed
+            self.speed = self.base_speed
         
-        # Set the direction based on the pressed keys
-        self.direction.y = -1 if keys[pg.K_UP] else (1 if keys[pg.K_DOWN] else 0)
-        self.direction.x = -1 if keys[pg.K_LEFT] else (1 if keys[pg.K_RIGHT] else 0)
+        # Determine direction based on pressed keys
+        if keys[pg.K_LEFT] or keys[pg.K_RIGHT]:
+            self.direction.x = -1 if keys[pg.K_LEFT] else 1
+            self.direction.y = 0
+            self.currdir = 'left' if keys[pg.K_LEFT] else 'right'
+            self.state = 'lleg' if self.state == 'idle' else self.state
+        elif keys[pg.K_UP] or keys[pg.K_DOWN]:
+            self.direction.x = 0
+            self.direction.y = -1 if keys[pg.K_UP] else 1
+            self.currdir = 'up' if keys[pg.K_UP] else 'down'
+            self.state = 'lleg' if self.state == 'idle' else self.state
+        else:
+            self.direction.x = 0
+            self.direction.y = 0
+            if self.state != 'idle':  # Only reset the state if it's not already idle
+                self.state = 'idle'
 
-        if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
-        # Check if space is pressed to initiate dodge
         if keys[pg.K_SPACE]:
             self.start_dodge()
+
 
     def start_dodge(self):
         self.dodging = True
@@ -41,24 +84,26 @@ class Player(pg.sprite.Sprite):
     def update(self):
         self.input()
 
-        # If dodging, move at dodge speed
         if self.dodging:
             self.move(self.dodge_speed)
-            # Check if dodge duration is over
             if pg.time.get_ticks() - self.dodge_timer >= self.dodge_duration:
                 self.dodging = False
         else:
             self.move(self.speed)
 
-    def move(self, speed):
-        if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
+        # Check if it's time to switch the state (only if moving)
+        if self.direction.x != 0 or self.direction.y != 0:
+            if pg.time.get_ticks() - self.state_timer >= self.state_interval:
+                self.state = 'lleg' if self.state == 'rleg' else 'rleg'
+                self.state_timer = pg.time.get_ticks()
 
-        # Move horizontally and check collision
+        # Update image based on direction and state
+        self.image = self.images[self.currdir][self.state]
+        self.rect = self.image.get_rect(center=self.rect.center)
+
+    def move(self, speed):
         self.rectify('x', speed)
         self.collision('horizontal')
-
-        # Move vertically and check collision
         self.rectify('y', speed)
         self.collision('vertical')
         self.rect.center = self.hitbox.center
@@ -69,13 +114,13 @@ class Player(pg.sprite.Sprite):
         if axis == 'y':
             self.hitbox.y += self.direction.y * speed
     
-    def collision(self,direction):
+    def collision(self, direction):
         if direction == 'horizontal':
             for sprite in self.obstacle_sprites:
                 if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.x > 0: # moving right
                         self.hitbox.right = sprite.hitbox.left
-                    if self.direction.x < 0: # moving left
+                    elif self.direction.x < 0: # moving left
                         self.hitbox.left = sprite.hitbox.right
 
         if direction == 'vertical':
@@ -83,11 +128,5 @@ class Player(pg.sprite.Sprite):
                 if sprite.hitbox.colliderect(self.hitbox):
                     if self.direction.y > 0: # moving down
                         self.hitbox.bottom = sprite.hitbox.top
-                    if self.direction.y < 0: # moving up
+                    elif self.direction.y < 0: # moving up
                         self.hitbox.top = sprite.hitbox.bottom
-    
-
-    def update(self):
-        self.input()
-        self.move(self.speed)
-       
