@@ -5,6 +5,7 @@ from player import Player
 from debug import debug
 import pandas as pd
 import os
+from mini_game import main as mini_game_main
 def import_csv_layout(path):
     terrain_map = pd.read_csv(path, header=None).astype(str).values.tolist()
     return terrain_map
@@ -17,6 +18,8 @@ class Level:
 		self.visible_sprites = YSortCameraGroup()
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.weapon_sprites = pygame.sprite.Group()
+
+		self.mini_game_active = [True, True, True, True, True]
 
 		# sprite setup
 		self.create_map()
@@ -117,8 +120,42 @@ class Level:
 	def run(self):
 		# update and draw the game
 		self.visible_sprites.custom_draw(self.player)
-		debug(self.player.rect.center)
+		debug([self.player.rect.center, self.player.health, self.player.high, self.player.exp])
 		self.visible_sprites.update()
+		
+		self.check_mini_game()
+
+
+	def check_mini_game(self):
+		original_caption = pygame.display.get_caption()  # Store the original caption
+		
+		if ((self.player.rect.center[0] >= 9 and self.mini_game_active[0] and self.player.rect.center[0] <= 110 and self.player.rect.center[1] == 590 and self.player.currdir == "up") or (self.player.rect.center[0] >= 1600 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[1]) or (self.player.rect.center[0] == 1888 and self.player.rect.center[1] <= 1600 and self.player.rect.center[1] >= 206 and self.player.currdir == "up" and self.mini_game_active[2]) or (self.player.rect.center[0] >= 1600 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[3]) or (self.player.rect.center[0] >= 1600 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[4])):
+			final_score = mini_game_main()
+			self.mini_game_active = False
+			self.player.rect.center = (200, 140)
+			# self.player = Player((200, 140), [self.visible_sprites], self.obstacle_sprites)  # Reset player position
+			# SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+			if final_score >= 10:
+				self.player.exp += 10
+				self.player.high -= 10
+				self.player.health += 10
+			self.visible_sprites.custom_draw(self.player)
+			# Reset screen dimensions
+			self.display_surface = pygame.display.get_surface()
+			pygame.display.set_mode((WIDTH, HEIGHT))
+			
+			# Redraw all elements
+			# self.visible_sprites = YSortCameraGroup()
+			# self.obstacle_sprites = pygame.sprite.Group()
+			# self.create_map()
+
+			# Restore the original caption
+			pygame.display.set_caption(original_caption[0])
+
+			# Process the score from the mini-game if needed
+			print("Final Score from Mini-Game:", final_score)
+
+
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
