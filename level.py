@@ -136,11 +136,15 @@ class Level:
 		self.visible_sprites.update()
 
 		self.check_mini_game()
-   
-   
+		self.visible_sprites.update_enemy_sprites(self.player)
 
-
-
+	def execute_player_attack(self):
+		if self.attack_sprites:
+			for attack_sprite in self.attack_sprites:
+				colliding_with = pygame.sprite.spritecollide(attack_sprite, self.player, False)
+				if colliding_with:
+					for target_sprite in colliding_with:
+						target_sprite.inflict_damage(self.player, attack_sprite.sprite_type)
 
 	def get_mini_game_number(self, player_pos):
 		x, y = player_pos[0], player_pos[1]
@@ -200,6 +204,11 @@ class Level:
 	def is_complete(self):
 		return self.mini_game_active[-1] == False
 
+	def damage_player(self,amount):
+		self.player.health -= amount
+		self.player.vulnerable = False
+
+
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
@@ -255,4 +264,8 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in self.sprites():
             if isinstance(sprite, Player):
                 sprite.attack()
-    
+    def update_enemy_sprites(self, player):
+        enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite,'sprite_type') and sprite.sprite_type == 'enemy']
+        for enemy in enemy_sprites:
+            enemy.update(player)
+

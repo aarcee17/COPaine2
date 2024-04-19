@@ -31,12 +31,88 @@ class Enemy(BasePlayer):
         for animation in self.animation.keys():
             self.animation[animation] = [file for file in os.walk('./graphics/monsters/{animation}')[2]]
         
-    def get_player_distance_direction(self, player):
-        enemy_vec = pygame.math.Vector2(self.rect.center)
-        player_vec = pygame.math.Vector2(player.rect.center)
-        distance = (player_vec - enemy_vec).magnitude()
+        self.damage_player = damage_player
+        
+    def determine_player_distance_direction(self, player):
+        enemy_pos = pygame.math.Vector2(self.rect.center)
+        player_pos = pygame.math.Vector2(player.rect.center)
+        distance = (player_pos - enemy_pos).magnitude()
         if distance > 0:
-            direction = (player_vec - enemy_vec).normalize()
+            direction = (player_pos - enemy_pos).normalize()
         else:
             direction = pygame.math.Vector2()
         return (distance, direction)
+
+    def determine_status(self, player):
+        distance = self.determine_player_distance_direction(player)[0]
+        if distance <= self.attack_radius and self.can_attack:
+            if self.status != 'attack':
+                self.frame_index = 0
+            self.status = 'attack'
+        elif distance <= self.notice_radius:
+            self.status = 'move'
+        else:
+            self.status = 'idle'
+
+    def perform_actions(self, player):
+        if self.status == 'attack':
+            self.attack_time = pygame.time.get_ticks()
+            self.damage_player(self.attack_damage, self.attack_type)
+        elif self.status == 'move':
+            self.direction = self.determine_player_distance_direction(player)[1]
+        else:
+            self.direction = pygame.math.Vector2()
+
+    def animate_movement(self):
+        animation = self.animations[self.status]
+        self.frame_index += self.animation_speed
+        if self.frame_index >= len(animation):
+            if self.status == 'attack':
+                self.can_attack = False
+            self.frame_index = 0
+        self.image = animation[int(self.frame_index)]
+        self.rect = self.image.get_rect(center=self.hitbox.center)
+        if not self.vulnerable:
+            alpha = self.wave_value()
+            self.image.set_alpha(alpha)
+        else:
+            self.image.set_alpha(255)
+
+    def handle_cooldowns(self):
+        current_time = pygame.time.get_ticks()
+        if not self.can_attack:
+            if current_time - self.attack_time >= self.attack_cooldown:
+                self.can_attack = True
+        if not self.vulnerable:
+            if current_time - self.hit_time >= self.invincibility_duration:
+                self.vulnerable = True
+
+    def receive_damage(self, player, attack_type):
+        if self.vulnerable:
+            self.direction = self.determine_player_distance_direction(player)[1]
+            if attack_type == 'weapon':
+                self.health -= player.get_full_weapon_damage()
+            else:
+                pass
+                # Apply magic damage
+            self.hit_time = pygame.time.get_ticks()
+            self.vulnerable = False
+
+    def verify_death(self):
+        if self.health <= 0:
+            self.kill()
+
+    def react_to_hit(self):
+        if not self.vulnerable:
+            self.direction *= -self.resistance
+
+    def update_status(self):
+        self.react_to_hit()
+        self.move(self.speed)
+        self.animate_movement()
+        self.handle_cooldowns()
+        self.verify_death()
+
+    def update_enemy(self, player):
+        self.determine_status(player)
+        self.perform_actions(player)
