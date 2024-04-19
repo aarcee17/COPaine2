@@ -208,6 +208,7 @@ class Level:
 			pygame.display.set_mode((WIDTH, HEIGHT))
 
 			pygame.display.set_caption(original_caption[0])
+			self.player.high -= 10
 
 			# print("Final Score from Mini-Game:", final_score)
 			print(self.mini_game_active) 

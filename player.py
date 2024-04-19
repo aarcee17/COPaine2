@@ -2,11 +2,13 @@ import pygame as pg
 from settings import *
 from attack import Weapon
 from basePlayer import BasePlayer
+import os
 
 class Player(BasePlayer):
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
-        
+        self.font_path = os.path.join(os.path.dirname(__file__), "pixel_font.ttf")
+        self.font = pygame.font.SysFont(self.font_path, 90, bold=True)
         # Load images for each direction and state
         self.images = {
             'left': {
@@ -50,8 +52,8 @@ class Player(BasePlayer):
         self.state_timer = 0  # Timer for state switching
         self.state_interval = 250  # Interval for state switching in milliseconds
         self.hitbox = self.rect.inflate(0, -26)
-        self.health = 120
-        self.high = 60
+        self.health = 1000
+        self.high = 100
         self.exp = 10
         self.attacking = False
         self.weapon_sprites = pg.sprite.Group()
@@ -92,9 +94,24 @@ class Player(BasePlayer):
             self.attacking = True
             self.hitsound_effect.play()
             Weapon(self, [self.groups()[0], self.weapon_sprites])
-
+    
+    def game_over(self):
+        text_box_rect = pygame.Rect(180, 150, WIDTH - 360, HEIGHT - 300)
+        pygame.draw.rect(pygame.display.get_surface(), '#666666', text_box_rect)
+        pygame.draw.rect(pygame.display.get_surface(), (0, 0, 0), text_box_rect, 3)
+        text_surface = self.font.render("REHABILITATION UNSUCCESSFUL!", True, WHITE)  # Render text surface
+        text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT// 2))  # Position text at the center of the text box
+        pygame.display.get_surface().blit(text_surface, text_rect)
+        pygame.display.flip()
+        pygame.time.delay(10000)  # Display "Game Over" for 2 seconds
+        pygame.quit()
+    
     def update(self):
         print(self.health)
+        if self.health <= 0:
+            self.kill()
+            self.game_over()
+            
         self.input()
         if not self.attacking:
             if self.dodging:
