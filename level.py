@@ -24,7 +24,7 @@ class Level:
 		self.weapon_sprites = pygame.sprite.Group()
 		self.attackable_sprites = pygame.sprite.Group()
 
-		# self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
+		#self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
 		self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
 		# sprite setup
 		self.create_map()
@@ -207,8 +207,10 @@ class Level:
 
 			# Process the score from the mini-game if needed
 			print("Final Score from Mini-Game:", final_score)
-			print(self.mini_game_active)
+			print(self.mini_game_active) 
+            #play_sound("graphics/sound/vending.wav")
             
+               
 	def is_complete(self):
 		return self.mini_game_active[-1] == False
 
@@ -257,14 +259,16 @@ class YSortCameraGroup(pygame.sprite.Group):
 
         self.font_path = os.path.join(os.path.dirname(__file__), "pixel_font.ttf")
         font = pygame.font.SysFont(self.font_path, 42)
-        strr= str(player.health)
+        strr= "H " + str(player.health) 
+        st = "D " + str(player.high)
+        strrr = "E " + str(player.exp)
         health_text = font.render(strr, True, (255, 255, 255))
         self.display_surface.blit(health_text, (health_meter_rect.right + 10, health_meter_rect.top))
 
-        high_o_text = font.render("D", True, (255, 255, 255))
+        high_o_text = font.render(st, True, (255, 255, 255))
         self.display_surface.blit(high_o_text, (high_o_meter_rect.right + 10, high_o_meter_rect.top))
 
-        exp_text = font.render("E", True, (255, 255, 255))
+        exp_text = font.render(strrr, True, (255, 255, 255))
         self.display_surface.blit(exp_text, (exp_meter_rect.right + 10, exp_meter_rect.top))
 
         # Update and draw the weapon
