@@ -4,6 +4,7 @@ from level import Level
 from level0 import Level0  # Import Level0 from level0.py
 from levelf import Levelf
 import math
+import os
 def apply_filter(screen, filter_color, alpha):
     filter_surface = pygame.Surface(screen.get_size())  # Create a surface with the same size as the screen
     filter_surface.set_alpha(alpha)  # Set the transparency level of the filter surface
@@ -19,13 +20,23 @@ class Game:
         self.level = Level()  # Initialize the main game level
         self.intro = Level0()  # Initialize the intro animation level
         self.outro = Levelf()
+        self.music1 = os.path.join(os.path.dirname(__file__), "intologi/vibe.mp3")
+        self.music3 = os.path.join(os.path.dirname(__file__), "intologi/vibe.mp3")
+        self.music2 = os.path.join(os.path.dirname(__file__), "audio/main.mp3")
+
     def daddy(self):
+        pygame.mixer.music.load(self.music1)  # Load background music
+        pygame.mixer.music.play(-1)
+
         
         self.run_intro()  # Run the intro animation
         
     def run_intro(self):
+
         running = True
         while running:
+            
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -47,10 +58,13 @@ class Game:
             # If the intro animation is complete, transition to the main game loop
             if self.intro.is_complete():
                 running = False
+                pygame.mixer.music.stop()
                 self.run()
 
     def run_outro(self):
         running = True
+        pygame.mixer.music.load(self.music3)  # Load background music
+        pygame.mixer.music.play(-1)    
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -71,10 +85,13 @@ class Game:
             self.clock.tick(FPS)
             if self.outro.is_complete():
                 running = False
+                pygame.mixer.music.stop()
                 pygame.quit()  # Once outro is complete, close the game screen and exit
 
             
     def run(self):
+        pygame.mixer.music.load(self.music2)  # Load background music
+        pygame.mixer.music.play(-1)    
         runn = True
         # Load the base tile image
         base_tile = pygame.transform.scale(pygame.image.load("base.png"), (64, 64))
@@ -82,6 +99,9 @@ class Game:
 
         # Transition to the main game loop
         while runn:
+
+            pygame.mixer.music.load(self.music3)  # Load background music
+            pygame.mixer.music.play()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -89,9 +109,9 @@ class Game:
 
             # Clear the screen
             self.screen.fill((0, 0, 0))
-
+            bhand = 30
             # Calculate the transparency using a sine function
-            transparency = (math.sin(pygame.time.get_ticks() / 1000) + 1) * 128  # Adjust speed with division
+            transparency = (math.sin(pygame.time.get_ticks()/(30000/bhand)) + 1) * 128  # Adjust speed with division
 
             # Create a surface to hold the tiled background
             tiled_background = pygame.Surface((WIDTH, HEIGHT))
@@ -118,6 +138,7 @@ class Game:
             self.clock.tick(FPS)
             if self.level.is_complete():
                 running = False
+                pygame.mixer.music.stop()
                 self.run_outro()
 
 

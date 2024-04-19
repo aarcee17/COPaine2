@@ -28,6 +28,7 @@ class Level:
         self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
         # sprite setup
         self.create_map()
+
     
 
 
