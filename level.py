@@ -141,7 +141,7 @@ class Level:
 		self.weapon_sprites = self.player.weapon_sprites
 
 	def run(self):
-        # update and draw the game
+		# update and draw the game
 		self.visible_sprites.custom_draw(self.player)
 		# debug([self.player.rect.center, self.player.health, self.player.high, self.player.exp])
 		self.visible_sprites.update()
@@ -157,11 +157,12 @@ class Level:
 				print(colliding_with)
 				if colliding_with:
 					for target_sprite in colliding_with:
-						target_sprite.receive_damage(self.player, 'weapon')
+						target_sprite.receive_damage(self.player, self.player.exp)
+						self.player.exp += 1
 
 	def get_mini_game_number(self, player_pos):
 		x, y = player_pos[0], player_pos[1]
-    
+
 		mini_game_conditions = [
 			# Condition 0
 			x >= 9 and x <= 110 and y == 590,

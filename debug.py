@@ -12,3 +12,4 @@ def debug(info):
     
     pygame.draw.rect(display_surface, pygame.Color('black'), debug_rect)
     display_surface.blit(debug_surf, debug_rect)
+

@@ -1,7 +1,7 @@
 import pygame
 from settings import *
 from basePlayer import BasePlayer
-import os
+from math import log10
 
 class Enemy(BasePlayer):
     def __init__(self, pos, groups, obstacle_sprites, monster_info, damage_player):
@@ -92,18 +92,18 @@ class Enemy(BasePlayer):
             if current_time - self.hit_time >= self.invincibility_duration:
                 self.vulnerable = True
 
-    def receive_damage(self, player, attack_type):
+    def receive_damage(self, player, exp):
         if self.vulnerable:
-            print(attack_type)
             self.direction = self.determine_player_distance_direction(player)[1]
             print("Enemy hit and got damage")
-            self.health -= 10
+            self.health -= 2*log10(exp) + 5
             self.hit_time = pygame.time.get_ticks()
             self.vulnerable = False
 
     def verify_death(self):
         if self.health <= 0:
             self.kill()
+            
 
     def react_to_hit(self):
         if not self.vulnerable:
