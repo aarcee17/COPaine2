@@ -44,15 +44,15 @@ class Player(BasePlayer):
         self.speed = self.base_speed
         self.obstacle_sprites = obstacle_sprites
         self.dodging = False
-        self.dodge_speed = 12
-        self.dodge_duration = 1000
+        self.dodge_speed = 18
+        self.dodge_duration = 200
         self.dodge_timer = 0
         self.state_timer = 0  # Timer for state switching
         self.state_interval = 250  # Interval for state switching in milliseconds
         self.hitbox = self.rect.inflate(0, -26)
-        self.health = 40
-        self.high = 40
-        self.exp = 40
+        self.health = 120
+        self.high = 60
+        self.exp = 10
         self.attacking = False
         self.weapon_sprites = pg.sprite.Group()
 
@@ -80,7 +80,7 @@ class Player(BasePlayer):
             if self.state != 'idle':  # Only reset the state if it's not already idle
                 self.state = 'idle'
 
-        if keys[pg.K_SPACE]:
+        if keys[pg.K_f]:
             self.start_dodge()
 
     def start_dodge(self):
