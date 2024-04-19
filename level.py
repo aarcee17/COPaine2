@@ -24,8 +24,8 @@ class Level:
 		self.weapon_sprites = pygame.sprite.Group()
 		self.attackable_sprites = pygame.sprite.Group()
 
-		self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
-		# self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
+		#self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
+		self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
 		# sprite setup
 		self.enemies = []
 		self.create_map()

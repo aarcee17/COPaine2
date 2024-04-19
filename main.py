@@ -62,6 +62,7 @@ class Game:
                 self.run()
 
     def run_outro(self):
+        pygame.mixer.music.stop()
         running = True
         pygame.mixer.music.load(self.music3)  # Load background music
         pygame.mixer.music.play(-1)    
@@ -90,6 +91,7 @@ class Game:
 
             
     def run(self):
+        pygame.mixer.music.stop()
         pygame.mixer.music.load(self.music2)  # Load background music
         pygame.mixer.music.play(-1)    
         runn = True
@@ -100,8 +102,6 @@ class Game:
         # Transition to the main game loop
         while runn:
 
-            pygame.mixer.music.load(self.music3)  # Load background music
-            pygame.mixer.music.play()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
