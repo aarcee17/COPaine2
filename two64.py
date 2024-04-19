@@ -12,7 +12,7 @@ SCREEN_WIDTH = GRID_SIZE * (TILE_SIZE + PADDING) + PADDING
 SCREEN_HEIGHT = GRID_SIZE * (TILE_SIZE + PADDING) + PADDING
 FONT_SIZE = 36
 WINNING_TILE = 64
-
+winsound = pygame.mixer.Sound("audio/vending2.wav")
 # Colors
 BACKGROUND_COLOR = (187, 173, 160)
 TILE_COLORS = {
@@ -166,6 +166,7 @@ def main():
                     grid, moved = move_and_generate(grid, "down")
                 if moved and check_win(grid):
                     print("You win!")
+                    winsound.play()
                     running = False
 
         # Draw the grid and tiles
