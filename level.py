@@ -127,12 +127,12 @@ class Level:
 						x = col_index * TILESIZE
 						y = row_index * TILESIZE
 						if col == '1001':
-							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [10, 10, 4, 10, 3, 40, 300], self.damage_player))
+							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [10, 10, 4, 10, 3, 40, 300], self.damage_player, 'simple'))
 
 						elif col == '1002':
-							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [100, 10, 4, 5, 4, 20, 340], self.damage_player))
+							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [100, 10, 4, 5, 4, 20, 340], self.damage_player, 'simple'))
 						elif col == '1003':
-							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [25, 10, 4, 8, 10, 10, 400], self.damage_player))
+							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [25, 10, 4, 8, 10, 300, 400], self.damage_player, 'wizard'))
 						elif len(mapItems[col]) > 1:
 							Tile((x, y), [self.visible_sprites], mapItems[col][0])
 						else:
