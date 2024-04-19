@@ -19,16 +19,16 @@ class Level:
 		self.display_surface = pygame.display.get_surface()
 
 		# sprite group setup
-		self.visible_sprites = YSortCameraGroup()
+		self.visible_sprites = YSortCameraGroup(self)
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.weapon_sprites = pygame.sprite.Group()
 		self.attackable_sprites = pygame.sprite.Group()
 
-		#self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
-		self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
+		self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
+		# self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
 		# sprite setup
+		self.enemies = []
 		self.create_map()
-    
 
 
     # def is_complete(self):
@@ -127,7 +127,12 @@ class Level:
 						x = col_index * TILESIZE
 						y = row_index * TILESIZE
 						if col == '1001':
-							Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [10, 10, 4, 10, 10, 40, 300], self.damage_player)
+							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [10, 10, 4, 10, 3, 40, 300], self.damage_player))
+
+						elif col == '1002':
+							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [100, 10, 4, 5, 4, 20, 340], self.damage_player))
+						elif col == '1003':
+							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [25, 10, 4, 8, 10, 10, 400], self.damage_player))
 						elif len(mapItems[col]) > 1:
 							Tile((x, y), [self.visible_sprites], mapItems[col][0])
 						else:
@@ -188,8 +193,8 @@ class Level:
 		original_caption = pygame.display.get_caption()  # Store the original caption
 		
 		if ((self.player.rect.center[0] >= 9 and self.mini_game_active[0] and self.player.rect.center[0] <= 110 and self.player.rect.center[1] == 590 and self.player.currdir == "up") or (self.player.rect.center[0] >= 1500 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[1]) or (self.player.rect.center[0] == 1888 and self.player.rect.center[1] <= 1450 and self.player.rect.center[1] >= 1350 and self.player.currdir == "right" and self.mini_game_active[2]) or (self.player.rect.center[0] >= 2900 and self.player.rect.center[0] <= 3000 and self.player.rect.center[1] == 590 and self.player.currdir == "up" and self.mini_game_active[3]) or (self.player.rect.center[0] >= 3000 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] >= 1000 and self.player.rect.center[1] <= 1400 and self.mini_game_active[4]) or (self.player.rect.center[0] == 2528 and self.player.rect.center[1] >= 1350 and self.player.rect.center[1] <= 1440 and self.mini_game_active[5]) or (self.player.rect.center[0] >= 2050 and self.player.rect.center[0] <= 2400 and self.player.rect.center[1] >= 35 and self.player.rect.center[1] <= 50 and self.mini_game_active[6]) or (self.player.rect.center[0] == 1632 and self.player.rect.center[1] >= 380 and self.player.rect.center[1] <= 480 and self.mini_game_active[6]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[7]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[8]) or (((not self.mini_game_active[0]) and (not self.mini_game_active[1]) and (not self.mini_game_active[2]) and (not self.mini_game_active[3]) and (not self.mini_game_active[4]) and (not self.mini_game_active[5]) and (not self.mini_game_active[6]) and (not self.mini_game_active[7]) and (not self.mini_game_active[8])) and self.player.rect.center[0] >= 3080 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] == 78)) and pygame.key.get_pressed()[pygame.K_PERIOD]:
-			# two64_main()
-			final_score = tictactoe_main()
+			two64_main()
+			# final_score = tictactoe_main()
 			self.mini_game_active[self.get_mini_game_number(self.player.rect.center)] = False
 			self.player.rect.center = (self.player.rect.center[0], self.player.rect.center[1])
 			# if final_score >= 10:
@@ -198,19 +203,16 @@ class Level:
 			# 	self.player.health += 10
 			self.visible_sprites.custom_draw(self.player)
 
-            # Reset screen dimensions
 			self.display_surface = pygame.display.get_surface()
 			pygame.display.set_mode((WIDTH, HEIGHT))
 
-            # Restore the original caption
 			pygame.display.set_caption(original_caption[0])
 
-			# Process the score from the mini-game if needed
-			print("Final Score from Mini-Game:", final_score)
+			# print("Final Score from Mini-Game:", final_score)
 			print(self.mini_game_active) 
             #play_sound("graphics/sound/vending.wav")
             
-               
+            
 	def is_complete(self):
 		return self.mini_game_active[-1] == False
 
@@ -219,7 +221,7 @@ class Level:
 		self.player.vulnerable = False
 
 class YSortCameraGroup(pygame.sprite.Group):
-    def __init__(self):
+    def __init__(self, level):
         super().__init__()
         self.display_surface = pygame.display.get_surface()
         self.half_width, self.half_height = self.display_surface.get_size()[0] // 2, self.display_surface.get_size()[1] // 2
@@ -227,6 +229,7 @@ class YSortCameraGroup(pygame.sprite.Group):
 
         self.floor_surf = pygame.image.load('./CityTiles/(1,16).png').convert_alpha()
         self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
+        self.level = level
 
     def calculate_offset(self, player):
         self.offset.x = player.rect.centerx - self.half_width
@@ -242,6 +245,13 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.draw_floor()
         sorted_sprites = sorted(self.sprites(), key = lambda sprite: sprite.rect.centery)
         for sprite in sorted_sprites:
+            if sprite not in self.level.enemies and sprite not in self.level.weapon_sprites:
+                offset_pos = sprite.rect.topleft - self.offset
+                self.display_surface.blit(sprite.image, offset_pos)
+        for sprite in self.level.enemies:
+            offset_pos = sprite.rect.topleft - self.offset
+            self.display_surface.blit(sprite.image, offset_pos)
+        for sprite in self.level.weapon_sprites:
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
         self.calculate_offset(player)

@@ -93,11 +93,13 @@ class Enemy(BasePlayer):
                 self.vulnerable = True
 
     def receive_damage(self, player, attack_type):
-        self.direction = self.determine_player_distance_direction(player)[1]
-        print("Enemy hit and got damage")
-        self.health -= 10
-        self.hit_time = pygame.time.get_ticks()
-        self.vulnerable = False
+        if self.vulnerable:
+            print(attack_type)
+            self.direction = self.determine_player_distance_direction(player)[1]
+            print("Enemy hit and got damage")
+            self.health -= 10
+            self.hit_time = pygame.time.get_ticks()
+            self.vulnerable = False
 
     def verify_death(self):
         if self.health <= 0:
