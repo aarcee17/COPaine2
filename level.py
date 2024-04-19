@@ -9,6 +9,7 @@ import os
 from mini_game import main as mini_game_main
 from two64 import main as two64_main
 from tictactoe import main as tictactoe_main
+from numpy.random import choice
 
 def import_csv_layout(path):
     terrain_map = pd.read_csv(path, header=None).astype(str).values.tolist()
@@ -24,8 +25,8 @@ class Level:
 		self.weapon_sprites = pygame.sprite.Group()
 		self.attackable_sprites = pygame.sprite.Group()
 
-		#self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
-		self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
+		self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
+		# self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
 		# sprite setup
 		self.enemies = []
 		self.create_map()
@@ -120,6 +121,7 @@ class Level:
 			'866': ['./CityTiles/(8,13).png'],
 			'867': ['./CityTiles/(9,13).png'],
 		}
+		types = ['simple', 'simple', 'simple', 'simple', 'wizard', 'wizard', 'wizard', 'spider', 'spider', 'racoon']
 		for _, layout in layouts.items():
 			for row_index, row in enumerate(layout):
 				for col_index, col in enumerate(row):
@@ -127,12 +129,12 @@ class Level:
 						x = col_index * TILESIZE
 						y = row_index * TILESIZE
 						if col == '1001':
-							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [10, 10, 4, 10, 3, 40, 300], self.damage_player, 'simple'))
+							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [10, 10, 3, 40, 300], self.damage_player, choice(types)))
 
 						elif col == '1002':
-							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [100, 10, 4, 5, 4, 20, 340], self.damage_player, 'simple'))
+							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [100, 10, 4, 20, 340], self.damage_player, choice(types)))
 						elif col == '1003':
-							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [25, 10, 4, 8, 10, 300, 400], self.damage_player, 'wizard'))
+							self.enemies.append(Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [25, 10, 10, 30, 400], self.damage_player, choice(types)))
 						elif len(mapItems[col]) > 1:
 							Tile((x, y), [self.visible_sprites], mapItems[col][0])
 						else:
@@ -194,14 +196,10 @@ class Level:
 		original_caption = pygame.display.get_caption()  # Store the original caption
 		
 		if ((self.player.rect.center[0] >= 9 and self.mini_game_active[0] and self.player.rect.center[0] <= 110 and self.player.rect.center[1] == 590 and self.player.currdir == "up") or (self.player.rect.center[0] >= 1500 and self.player.rect.center[0] <= 1600 and self.player.rect.center[1] == 206 and self.player.currdir == "up" and self.mini_game_active[1]) or (self.player.rect.center[0] == 1888 and self.player.rect.center[1] <= 1450 and self.player.rect.center[1] >= 1350 and self.player.currdir == "right" and self.mini_game_active[2]) or (self.player.rect.center[0] >= 2900 and self.player.rect.center[0] <= 3000 and self.player.rect.center[1] == 590 and self.player.currdir == "up" and self.mini_game_active[3]) or (self.player.rect.center[0] >= 3000 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] >= 1000 and self.player.rect.center[1] <= 1400 and self.mini_game_active[4]) or (self.player.rect.center[0] == 2528 and self.player.rect.center[1] >= 1350 and self.player.rect.center[1] <= 1440 and self.mini_game_active[5]) or (self.player.rect.center[0] >= 2050 and self.player.rect.center[0] <= 2400 and self.player.rect.center[1] >= 35 and self.player.rect.center[1] <= 50 and self.mini_game_active[6]) or (self.player.rect.center[0] == 1632 and self.player.rect.center[1] >= 380 and self.player.rect.center[1] <= 480 and self.mini_game_active[6]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[7]) or (self.player.rect.center[1] == 1422 and self.player.rect.center[0] >= 270 and self.player.rect.center[0] <= 370 and self.mini_game_active[8]) or (((not self.mini_game_active[0]) and (not self.mini_game_active[1]) and (not self.mini_game_active[2]) and (not self.mini_game_active[3]) and (not self.mini_game_active[4]) and (not self.mini_game_active[5]) and (not self.mini_game_active[6]) and (not self.mini_game_active[7]) and (not self.mini_game_active[8])) and self.player.rect.center[0] >= 3080 and self.player.rect.center[0] <= 3200 and self.player.rect.center[1] == 78)) and pygame.key.get_pressed()[pygame.K_PERIOD]:
-			two64_main()
-			# final_score = tictactoe_main()
+			choice([two64_main])()
 			self.mini_game_active[self.get_mini_game_number(self.player.rect.center)] = False
+			
 			self.player.rect.center = (self.player.rect.center[0], self.player.rect.center[1])
-			# if final_score >= 10:
-			# 	self.player.exp += 10
-			# 	self.player.high -= 10
-			# 	self.player.health += 10
 			self.visible_sprites.custom_draw(self.player)
 
 			self.display_surface = pygame.display.get_surface()
@@ -260,7 +258,7 @@ class YSortCameraGroup(pygame.sprite.Group):
 
 
         # Draw meters
-        health_meter_rect = pygame.Rect(40, 10, player.health * 2.5, 20)
+        health_meter_rect = pygame.Rect(40, 10, player.health * 1.25, 20)
         pygame.draw.rect(self.display_surface, (255, 0, 0), health_meter_rect)
 
         high_o_meter_rect = pygame.Rect(40, 40, player.high * 2.5, 20)
@@ -271,9 +269,9 @@ class YSortCameraGroup(pygame.sprite.Group):
 
         self.font_path = os.path.join(os.path.dirname(__file__), "pixel_font.ttf")
         font = pygame.font.SysFont(self.font_path, 42)
-        strr= "H " + str(player.health) 
-        st = "D " + str(player.high)
-        strrr = "E " + str(player.exp)
+        strr= "Soul " + str(max(player.health, 0)) 
+        st = "D " + str(max(player.high, 0))
+        strrr = "E " + str(max(player.exp, 0))
         health_text = font.render(strr, True, (255, 255, 255))
         self.display_surface.blit(health_text, (health_meter_rect.right + 10, health_meter_rect.top))
 

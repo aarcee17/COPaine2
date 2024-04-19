@@ -74,6 +74,7 @@ def computer_move():
 
 def main():
 # Main game loop
+    board = [['' for _ in range(3)] for _ in range(3)]
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Tic Tac Toe")
     running = True
@@ -100,6 +101,7 @@ def main():
         winner = check_winner()
         if winner:
             print(f"Player {winner} wins!")
+            board = [['' for _ in range(3)] for _ in range(3)]
             running = False
         elif is_board_full():
             print("It's a tie!")

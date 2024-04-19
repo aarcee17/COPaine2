@@ -11,15 +11,34 @@ class Enemy(BasePlayer):
         self.animation = {'simple':{
             'idle': ['./graphics/monsters/idle/0.png'],
             'move': ['./graphics/monsters/move/1.png', './graphics/monsters/move/2.png', './graphics/monsters/move/3.png', './graphics/monsters/move/2.png'],
-            'attack': ['./graphics/monsters/attack/0 copy.png']
+            'attack': ['./graphics/monsters/attack/0 copy.png'],
+            'speed': 3,
+            'damage': 4
         },
         'wizard':{
             'idle': ['./graphics/monsters/wizard/0.png'],
-            'move': ['./graphics/monsters/wizard/0.png', './graphics/monsters/wizard/1.png'],
-            'attack': ['./graphics/monsters/wizard/1.png', './graphics/monsters/wizard/2.png', './graphics/monsters/wizard/3.png', './graphics/monsters/wizard/4.png', './graphics/monsters/wizard/5.png', './graphics/monsters/wizard/6.png', './graphics/monsters/wizard/7.png', './graphics/monsters/wizard/8.png', './graphics/monsters/wizard/9.png']
+            'move': ['./graphics/monsters/wizard/5.png', './graphics/monsters/wizard/6.png', './graphics/monsters/wizard/7.png', './graphics/monsters/wizard/8.png', './graphics/monsters/wizard/9.png'],
+            'attack': ['./graphics/monsters/wizard/1.png'],
+            'speed': 4,
+            'damage': 12
+        },
+        'spider' : {
+            'idle': ['./graphics/monsters/spider/0.png'],
+            'move': ['./graphics/monsters/spider/0.png'],
+            'attack': ['./graphics/monsters/spider/0.png'],
+            'speed': 5,
+            'damage': 5
+        },
+        'racoon' : {
+            'idle': ['./graphics/monsters/racoon/idle/0.png', './graphics/monsters/racoon/idle/1.png', './graphics/monsters/racoon/idle/2.png', './graphics/monsters/racoon/idle/3.png', './graphics/monsters/racoon/idle/4.png', './graphics/monsters/racoon/idle/5.png'],
+            'move': ['./graphics/monsters/racoon/move/0.png', './graphics/monsters/racoon/move/1.png', './graphics/monsters/racoon/move/2.png', './graphics/monsters/racoon/move/3.png', './graphics/monsters/racoon/move/4.png'],
+            'attack': ['./graphics/monsters/racoon/attack/0.png', './graphics/monsters/racoon/attack/1.png', './graphics/monsters/racoon/attack/2.png', './graphics/monsters/racoon/attack/3.png'],
+            'speed': 2,
+            'damage': 20
+        },
         }
-        }
-        
+        self.attack_damage = self.animation[type]['damage']
+        self.speed = self.animation[type]['speed']
         self.status = 'idle'
         self.type = type
         self.image = pygame.image.load(self.animation[self.type][self.status][self.frame_idx], 'rb').convert_alpha()
@@ -29,11 +48,9 @@ class Enemy(BasePlayer):
         self.hurtsound = pygame.mixer.Sound("audio/sword.wav")
         self.health = monster_info[0]
         self.exp = monster_info[1]
-        self.speed = monster_info[2]
-        self.attack_damage = monster_info[3]
-        self.resistance = monster_info[4]
-        self.attack_radius = monster_info[5]
-        self.notice_radius = monster_info[6]
+        self.resistance = monster_info[2]
+        self.attack_radius = monster_info[3]
+        self.notice_radius = monster_info[4]
         self.can_attack = True
         self.vulnerable = True
         self.attack_time = 0
@@ -60,7 +77,7 @@ class Enemy(BasePlayer):
             if self.status != 'attack':
                 self.frame_idx = 0
             self.status = 'attack'
-        elif distance <= self.notice_radius and distance > self.attack_radius:
+        elif distance <= self.notice_radius:
             self.status = 'move'
         else:
             self.status = 'idle'
@@ -77,6 +94,7 @@ class Enemy(BasePlayer):
 
     def animate_movement(self):
         animation = self.animation[self.type][self.status]
+        print(animation)
         self.frame_idx += self.animation_speed
         if self.frame_idx >= len(animation):
             if self.status == 'attack':
@@ -118,9 +136,8 @@ class Enemy(BasePlayer):
             self.direction *= -self.resistance
 
     def update_status(self):
-        if self.status == 'move':
-            self.move(self.speed)
         self.react_to_hit()
+        self.move(self.speed)
         self.animate_movement()
         self.handle_cooldowns()
         self.verify_death()

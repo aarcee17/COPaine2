@@ -5,7 +5,7 @@ class Level0:
     def __init__(self):
         self.slides = [
             {"image": "intologi/intro.png", "message": "READY TO BEGIN? PRESS SPACE TO BEGIN THE JOURNEY!"},
-{"image": "intologi/im1.jpeg", "message": "SAKSHAL, A TEENAGER FROM JHARKHAND, STUMBLED UPON DRUGS IN THE STREETS."},
+{"image": "intologi/im1.jpeg", "message": "SAKSHAL, A TEENAGER FROM NEVADA, STUMBLED UPON DRUGS IN THE STREETS."},
 {"image": "intologi/im2.jpeg", "message": "INITIALLY, DRUGS SEEMED LIKE AN ESCAPE FROM HIS TROUBLES."},
 {"image": "intologi/im3.jpeg", "message": "CARL'S DRUG USE ESCALATED AS HE SOUGHT MORE INTENSE HIGHS."},
 {"image": "intologi/im4.jpeg", "message": "HE BEGAN TO NEGLECT HIS RESPONSIBILITIES AND RELATIONSHIPS."},

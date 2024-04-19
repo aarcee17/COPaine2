@@ -135,7 +135,7 @@ class Game:
             self.level.run()  # Run the main game loop
             pygame.display.update()
 
-            self.clock.tick(FPS)
+            self.clock.tick((100-self.level.player.high)/2.5 + 20)
             if self.level.is_complete():
                 running = False
                 #pygame.mixer.music.stop()

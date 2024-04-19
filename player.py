@@ -42,7 +42,7 @@ class Player(BasePlayer):
         self.rect = self.image.get_rect(topleft=pos)
         self.hitsound_effect = pygame.mixer.Sound("audio/slash.wav")
         self.dashsound = pygame.mixer.Sound("audio/dash.wav")
-        self.base_speed = 6
+        self.base_speed = 7
         self.speed = self.base_speed
         self.obstacle_sprites = obstacle_sprites
         self.dodging = False
@@ -52,7 +52,7 @@ class Player(BasePlayer):
         self.state_timer = 0  # Timer for state switching
         self.state_interval = 250  # Interval for state switching in milliseconds
         self.hitbox = self.rect.inflate(0, -26)
-        self.health = 1000
+        self.health = 200
         self.high = 100
         self.exp = 10
         self.attacking = False
