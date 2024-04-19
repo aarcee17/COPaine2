@@ -4,18 +4,25 @@ from basePlayer import BasePlayer
 from math import log10
 
 class Enemy(BasePlayer):
-    def __init__(self, pos, groups, obstacle_sprites, monster_info, damage_player):
+    def __init__(self, pos, groups, obstacle_sprites, monster_info, damage_player, type):
         super().__init__(groups)
         self.sprite_type = 'enemy'
         
-        self.animation = {
+        self.animation = {'simple':{
             'idle': ['./graphics/monsters/idle/0.png'],
             'move': ['./graphics/monsters/move/1.png', './graphics/monsters/move/2.png', './graphics/monsters/move/3.png', './graphics/monsters/move/2.png'],
             'attack': ['./graphics/monsters/attack/0 copy.png']
+        },
+        'wizard':{
+            'idle': ['./graphics/monsters/wizard/0.png'],
+            'move': ['./graphics/monsters/wizard/0.png', './graphics/monsters/wizard/1.png'],
+            'attack': ['./graphics/monsters/wizard/1.png', './graphics/monsters/wizard/2.png', './graphics/monsters/wizard/3.png', './graphics/monsters/wizard/4.png', './graphics/monsters/wizard/5.png', './graphics/monsters/wizard/6.png', './graphics/monsters/wizard/7.png', './graphics/monsters/wizard/8.png', './graphics/monsters/wizard/9.png']
+        }
         }
         
         self.status = 'idle'
-        self.image = pygame.image.load(self.animation[self.status][self.frame_idx], 'rb').convert_alpha()
+        self.type = type
+        self.image = pygame.image.load(self.animation[self.type][self.status][self.frame_idx], 'rb').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -10)
         self.obstacle_sprites = obstacle_sprites
@@ -33,7 +40,6 @@ class Enemy(BasePlayer):
         self.attack_cooldown = 500
         self.invincibility_duration = 300
         
-        
         self.damage_player = damage_player
         
     def determine_player_distance_direction(self, player):
@@ -48,12 +54,13 @@ class Enemy(BasePlayer):
 
     def determine_status(self, player):
         distance = self.determine_player_distance_direction(player)[0]
-        
+        print("Distance: ", distance)
+        print("Attack radius: ", self.attack_radius)
         if distance <= self.attack_radius and self.can_attack:
             if self.status != 'attack':
                 self.frame_idx = 0
             self.status = 'attack'
-        elif distance <= self.notice_radius:
+        elif distance <= self.notice_radius and distance > self.attack_radius:
             self.status = 'move'
         else:
             self.status = 'idle'
@@ -69,7 +76,7 @@ class Enemy(BasePlayer):
             self.direction = pygame.math.Vector2()
 
     def animate_movement(self):
-        animation = self.animation[self.status]
+        animation = self.animation[self.type][self.status]
         self.frame_idx += self.animation_speed
         if self.frame_idx >= len(animation):
             if self.status == 'attack':
@@ -111,8 +118,9 @@ class Enemy(BasePlayer):
             self.direction *= -self.resistance
 
     def update_status(self):
+        if self.status == 'move':
+            self.move(self.speed)
         self.react_to_hit()
-        self.move(self.speed)
         self.animate_movement()
         self.handle_cooldowns()
         self.verify_death()
