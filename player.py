@@ -1,8 +1,9 @@
 import pygame as pg
 from settings import *
 from attack import Weapon
+from basePlayer import BasePlayer
 
-class Player(pg.sprite.Sprite):
+class Player(BasePlayer):
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
         
@@ -92,8 +93,6 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         self.input()
-        
-
         if not self.attacking:
             if self.dodging:
                 self.move(self.dodge_speed)
@@ -110,45 +109,6 @@ class Player(pg.sprite.Sprite):
         # Update image based on direction and state
         self.image = self.images[self.currdir][self.state]
         self.rect = self.image.get_rect(center=self.rect.center)
-
-    def move(self, speed):
-        self.rectify('x', speed)
-        self.collision('horizontal')
-        self.rectify('y', speed)
-        self.collision('vertical')
-        self.rect.center = self.hitbox.center
-        if self.rect.center[0] < 0:
-            self.rect.center = (0, self.rect.center[1])
-        elif self.rect.center[0] > 3200:
-            self.rect.center = (3200, self.rect.center[1])
-        if self.rect.center[1] < -50:
-            self.rect.center = (self.rect.center[0], -50)
-        elif self.rect.center[1] > 1500:
-            self.rect.center = (self.rect.center[0], 1500)
-        self.hitbox.center = self.rect.center
-        
-    def rectify(self, axis, speed):
-        if axis == 'x':
-            self.hitbox.x += self.direction.x * speed
-        if axis == 'y':
-            self.hitbox.y += self.direction.y * speed
-    
-    def collision(self, direction):
-        if direction == 'horizontal':
-            for sprite in self.obstacle_sprites:
-                if sprite.hitbox.colliderect(self.hitbox):
-                    if self.direction.x > 0: # moving right
-                        self.hitbox.right = sprite.hitbox.left
-                    elif self.direction.x < 0: # moving left
-                        self.hitbox.left = sprite.hitbox.right
-
-        if direction == 'vertical':
-            for sprite in self.obstacle_sprites:
-                if sprite.hitbox.colliderect(self.hitbox):
-                    if self.direction.y > 0: # moving down
-                        self.hitbox.bottom = sprite.hitbox.top
-                    elif self.direction.y < 0: # moving up
-                        self.hitbox.top = sprite.hitbox.bottom
 
     def draw_health_meter(self, screen):
         health_bar_width = 100
