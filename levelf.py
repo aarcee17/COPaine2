@@ -5,8 +5,8 @@ from settings import *
 class Levelf:
     def __init__(self):
         self.slides = [
-            {"image": "black.jpeg", "text": "Where am I ?"},
-            {"image": "black.jpeg", "text": "Your laughter was music to my ears, and your smile could brighten even the darkest of days."},
+            {"image": "outrologi/hoax.png", "text": "Where am I ?"},
+            {"image": "outrologi/hoax.png", "text": "Your laughter was music to my ears, and your smile could brighten even the darkest of days."},
             {"image": "black.jpeg", "text": "I watched you grow, taking your first steps, saying your first words, each moment etched into my heart forever."},
             {"image": "black.jpeg", "text": "But as time passed, I saw a change in you, a darkness creeping into your soul, clouding the light that once shone so brightly."},
             {"image": "outrologi/image2.png", "text": "My beloved child, as your mother, I remember holding you in my arms, feeling the warmth of your tiny body against mine."},
@@ -31,9 +31,9 @@ class Levelf:
         self.text_rendered = False  # Flag to track if text rendering is complete
         self.text_box_height = HEIGHT * 0.25  # Height of the text box
         self.image_height = HEIGHT - self.text_box_height  # Height of the image display area
-        self.background_music_path = os.path.join(os.path.dirname(__file__), "intologi/vibe.mp3")
-        pygame.mixer.music.load(self.background_music_path)  # Load background music
-        pygame.mixer.music.play(-1)  # Play background music indefinitely
+        # self.background_music_path = os.path.join(os.path.dirname(__file__), "intologi/vibe.mp3")
+        # pygame.mixer.music.load(self.background_music_path)  # Load background music
+        # pygame.mixer.music.play(-1)  # Play background music indefinitely
 
     def run(self):
         pygame.display.get_surface().fill((255, 255, 255))  # Fill screen with white background

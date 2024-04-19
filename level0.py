@@ -5,12 +5,12 @@ class Level0:
     def __init__(self):
         self.slides = [
             {"image": "intologi/intro.png", "message": "READY TO BEGIN? PRESS SPACE TO BEGIN THE JOURNEY!"},
-{"image": "intologi/im1.jpeg", "message": "SAKSHAM, A TEENAGER FROM JHARKHAND, STUMBLED UPON DRUGS IN THE STREETS."},
+{"image": "intologi/im1.jpeg", "message": "SAKSHAL, A TEENAGER FROM JHARKHAND, STUMBLED UPON DRUGS IN THE STREETS."},
 {"image": "intologi/im2.jpeg", "message": "INITIALLY, DRUGS SEEMED LIKE AN ESCAPE FROM HIS TROUBLES."},
-{"image": "intologi/im3.jpeg", "message": "SAKSHAM'S DRUG USE ESCALATED AS HE SOUGHT MORE INTENSE HIGHS."},
+{"image": "intologi/im3.jpeg", "message": "CARL'S DRUG USE ESCALATED AS HE SOUGHT MORE INTENSE HIGHS."},
 {"image": "intologi/im4.jpeg", "message": "HE BEGAN TO NEGLECT HIS RESPONSIBILITIES AND RELATIONSHIPS."},
-{"image": "intologi/im4.jpeg", "message": "AS HIS ADDICTION DEEPENED, SAKSHAM'S HEALTH AND WELL-BEING SUFFERED."},
-{"image": "intologi/im5.jpeg", "message": "SAKSHAM ENTERED A WORLD OF DARKNESS AND DESPAIR, RULED BY ADDICTION."},
+{"image": "intologi/im4.jpeg", "message": "AS HIS ADDICTION DEEPENED, CARL'S HEALTH AND WELL-BEING SUFFERED."},
+{"image": "intologi/im5.jpeg", "message": "CARL ENTERED A WORLD OF DARKNESS AND DESPAIR, RULED BY ADDICTION."},
 {"image": "intologi/im5.jpeg", "message": "THE DRUGS CONSUMED HIM, DRIVING HIM TO THE EDGE OF SANITY."},
 {"image": "intologi/im8.jpeg", "message": ""},
 {"image": "plain_black.jpeg", "message": ""}
@@ -86,9 +86,9 @@ class Level0:
         self.text_rendered = False  # Flag to track if text rendering is complete
         self.text_box_height = HEIGHT * 0.25  # Height of the text box
         self.image_height = HEIGHT - self.text_box_height  # Height of the image display area
-        self.background_music_path = os.path.join(os.path.dirname(__file__), "intologi/vibe.mp3")
-        pygame.mixer.music.load(self.background_music_path)  # Load background music
-        pygame.mixer.music.play(-1)  # Play background music indefinitely
+        # self.background_music_path = os.path.join(os.path.dirname(__file__), "intologi/vibe.mp3")
+        # pygame.mixer.music.load(self.background_music_path)  # Load background music
+        # pygame.mixer.music.play(-1)  # Play background music indefinitely
 
     def run(self):
         pygame.display.get_surface().fill((255, 255, 255))  # Fill screen with white background

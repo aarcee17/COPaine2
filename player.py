@@ -38,7 +38,7 @@ class Player(BasePlayer):
         self.state = 'idle'  # Initial state
         self.image = self.images[self.currdir][self.state]
         self.rect = self.image.get_rect(topleft=pos)
-        
+        self.hitsound_effect = pygame.mixer.Sound("audio/slash.wav")
         # Other attributes
         self.base_speed = 6
         self.speed = self.base_speed
@@ -90,6 +90,7 @@ class Player(BasePlayer):
     def attack(self):
         if pg.key.get_pressed()[pg.K_x]:
             self.attacking = True
+            self.hitsound_effect.play()
             Weapon(self, [self.groups()[0], self.weapon_sprites])
 
     def update(self):

@@ -265,7 +265,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         high_o_meter_rect = pygame.Rect(40, 40, player.high * 2.5, 20)
         pygame.draw.rect(self.display_surface, (0, 255, 0), high_o_meter_rect)
 
-        exp_meter_rect = pygame.Rect(40, 70, player.exp * 2.5, 20)
+        exp_meter_rect = pygame.Rect(40, 70, player.exp * 0.25, 20)
         pygame.draw.rect(self.display_surface, (0, 0, 255), exp_meter_rect)
 
         self.font_path = os.path.join(os.path.dirname(__file__), "pixel_font.ttf")

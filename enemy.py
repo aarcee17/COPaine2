@@ -19,7 +19,7 @@ class Enemy(BasePlayer):
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -10)
         self.obstacle_sprites = obstacle_sprites
-        
+        self.hurtsound = pygame.mixer.Sound("audio/sword.wav")
         self.health = monster_info[0]
         self.exp = monster_info[1]
         self.speed = monster_info[2]
@@ -95,6 +95,7 @@ class Enemy(BasePlayer):
     def receive_damage(self, player, exp):
         if self.vulnerable:
             self.direction = self.determine_player_distance_direction(player)[1]
+            self.hurtsound.play()
             print("Enemy hit and got damage")
             self.health -= 2*log10(exp) + 5
             self.hit_time = pygame.time.get_ticks()

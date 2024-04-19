@@ -58,7 +58,7 @@ class Game:
             # If the intro animation is complete, transition to the main game loop
             if self.intro.is_complete():
                 running = False
-                pygame.mixer.music.stop()
+                #pygame.mixer.music.stop()
                 self.run()
 
     def run_outro(self):
@@ -85,7 +85,7 @@ class Game:
             self.clock.tick(FPS)
             if self.outro.is_complete():
                 running = False
-                pygame.mixer.music.stop()
+                # pygame.mixer.music.stop()
                 pygame.quit()  # Once outro is complete, close the game screen and exit
 
             
@@ -138,7 +138,7 @@ class Game:
             self.clock.tick(FPS)
             if self.level.is_complete():
                 running = False
-                pygame.mixer.music.stop()
+                #pygame.mixer.music.stop()
                 self.run_outro()
 
 
