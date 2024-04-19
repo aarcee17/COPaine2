@@ -5,6 +5,8 @@ class BasePlayer(pygame.sprite.Sprite):
     def __init__(self, groups):
         super().__init__(groups)
         self.direction = pygame.math.Vector2()
+        self.frame_idx = 0
+        self.animation_speed = 0.15
         
     def move(self, speed):
         self.rectify('x', speed)

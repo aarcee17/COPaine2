@@ -8,8 +8,14 @@ class Enemy(BasePlayer):
         super().__init__(groups)
         self.sprite_type = 'enemy'
         
+        self.animation = {
+            'idle': ['./graphics/monsters/idle/0.png'],
+            'move': ['./graphics/monsters/move/1.png', './graphics/monsters/move/2.png', './graphics/monsters/move/3.png', './graphics/monsters/move/2.png'],
+            'attack': ['./graphics/monsters/attack/0 copy.png']
+        }
+        
         self.status = 'idle'
-        self.image = self.animations[self.status][self.frame_index]
+        self.image = pygame.image.load(self.animation[self.status][self.frame_idx], 'rb').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -10)
         self.obstacle_sprites = obstacle_sprites
@@ -21,15 +27,12 @@ class Enemy(BasePlayer):
         self.resistance = monster_info[4]
         self.attack_radius = monster_info[5]
         self.notice_radius = monster_info[6]
+        self.can_attack = True
+        self.vulnerable = True
+        self.attack_time = 0
+        self.attack_cooldown = 500
+        self.invincibility_duration = 300
         
-        self.animation = {
-            'idle': [],
-            'move': [],
-            'attack': []
-        }
-        
-        for animation in self.animation.keys():
-            self.animation[animation] = [file for file in os.walk('./graphics/monsters/{animation}')[2]]
         
         self.damage_player = damage_player
         
@@ -45,9 +48,10 @@ class Enemy(BasePlayer):
 
     def determine_status(self, player):
         distance = self.determine_player_distance_direction(player)[0]
+        
         if distance <= self.attack_radius and self.can_attack:
             if self.status != 'attack':
-                self.frame_index = 0
+                self.frame_idx = 0
             self.status = 'attack'
         elif distance <= self.notice_radius:
             self.status = 'move'
@@ -55,25 +59,26 @@ class Enemy(BasePlayer):
             self.status = 'idle'
 
     def perform_actions(self, player):
-        if self.status == 'attack':
+        if self.status == 'attack' and self.can_attack:
             self.attack_time = pygame.time.get_ticks()
-            self.damage_player(self.attack_damage, self.attack_type)
+            self.damage_player(self.attack_damage)
+            self.can_attack = False
         elif self.status == 'move':
             self.direction = self.determine_player_distance_direction(player)[1]
         else:
             self.direction = pygame.math.Vector2()
 
     def animate_movement(self):
-        animation = self.animations[self.status]
-        self.frame_index += self.animation_speed
-        if self.frame_index >= len(animation):
+        animation = self.animation[self.status]
+        self.frame_idx += self.animation_speed
+        if self.frame_idx >= len(animation):
             if self.status == 'attack':
                 self.can_attack = False
-            self.frame_index = 0
-        self.image = animation[int(self.frame_index)]
+            self.frame_idx = 0
+        self.image = pygame.image.load(animation[int(self.frame_idx)], 'rb').convert_alpha()
         self.rect = self.image.get_rect(center=self.hitbox.center)
         if not self.vulnerable:
-            alpha = self.wave_value()
+            alpha = self.phase()
             self.image.set_alpha(alpha)
         else:
             self.image.set_alpha(255)
@@ -88,15 +93,11 @@ class Enemy(BasePlayer):
                 self.vulnerable = True
 
     def receive_damage(self, player, attack_type):
-        if self.vulnerable:
-            self.direction = self.determine_player_distance_direction(player)[1]
-            if attack_type == 'weapon':
-                self.health -= player.get_full_weapon_damage()
-            else:
-                pass
-                # Apply magic damage
-            self.hit_time = pygame.time.get_ticks()
-            self.vulnerable = False
+        self.direction = self.determine_player_distance_direction(player)[1]
+        print("Enemy hit and got damage")
+        self.health -= 10
+        self.hit_time = pygame.time.get_ticks()
+        self.vulnerable = False
 
     def verify_death(self):
         if self.health <= 0:
@@ -114,5 +115,7 @@ class Enemy(BasePlayer):
         self.verify_death()
 
     def update_enemy(self, player):
+        print("Updating enemy")
         self.determine_status(player)
         self.perform_actions(player)
+        self.update_status()

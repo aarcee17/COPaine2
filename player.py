@@ -54,6 +54,7 @@ class Player(BasePlayer):
         self.high = 40
         self.exp = 40
         self.attacking = False
+        self.weapon_sprites = pg.sprite.Group()
 
     def input(self):
         keys = pg.key.get_pressed()
@@ -89,9 +90,10 @@ class Player(BasePlayer):
     def attack(self):
         if pg.key.get_pressed()[pg.K_x]:
             self.attacking = True
-            Weapon(self, [self.groups()[0]])
+            Weapon(self, [self.groups()[0], self.weapon_sprites])
 
     def update(self):
+        print(self.health)
         self.input()
         if not self.attacking:
             if self.dodging:

@@ -2,6 +2,7 @@ import pygame
 from settings import *
 from tile import Tile
 from player import Player
+from enemy import Enemy
 from debug import debug
 import pandas as pd
 import os
@@ -21,6 +22,7 @@ class Level:
 		self.visible_sprites = YSortCameraGroup()
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.weapon_sprites = pygame.sprite.Group()
+		self.attackable_sprites = pygame.sprite.Group()
 
 		# self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
 		self.mini_game_active = [False,False,False,False,False,False,False,False,False,True]
@@ -40,7 +42,8 @@ class Level:
 		layouts = {
 			'base': import_csv_layout('./map/DrugMap_Base.csv'),
 			'road': import_csv_layout('./map/DrugMap_Roads.csv'),
-			'homes': import_csv_layout('./map/DrugMap_Homes.csv')
+			'homes': import_csv_layout('./map/DrugMap_Homes.csv'),
+			'entities': import_csv_layout('./map/DrugMap_Entities.csv')
 		}
 		mapItems = {
 			'1057': ['./CityTiles/(1,16).png','no'],
@@ -117,17 +120,20 @@ class Level:
 			'866': ['./CityTiles/(8,13).png'],
 			'867': ['./CityTiles/(9,13).png'],
 		}
-		for style, layout in layouts.items():
+		for _, layout in layouts.items():
 			for row_index, row in enumerate(layout):
 				for col_index, col in enumerate(row):
 					if col != '-1':
 						x = col_index * TILESIZE
 						y = row_index * TILESIZE
-						if len(mapItems[col]) > 1:
+						if col == '1001':
+							Enemy((x, y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, [10, 10, 4, 10, 10, 40, 300], self.damage_player)
+						elif len(mapItems[col]) > 1:
 							Tile((x, y), [self.visible_sprites], mapItems[col][0])
 						else:
 							Tile((x, y), [self.visible_sprites, self.obstacle_sprites], mapItems[col][0])
 		self.player = Player((200, 140), [self.visible_sprites], self.obstacle_sprites)
+		self.weapon_sprites = self.player.weapon_sprites
 
 	def run(self):
         # update and draw the game
@@ -137,14 +143,16 @@ class Level:
 
 		self.check_mini_game()
 		self.visible_sprites.update_enemy_sprites(self.player)
+		self.execute_player_attack()
 
 	def execute_player_attack(self):
-		if self.attack_sprites:
-			for attack_sprite in self.attack_sprites:
-				colliding_with = pygame.sprite.spritecollide(attack_sprite, self.player, False)
+		if self.weapon_sprites:
+			for attack_sprite in self.weapon_sprites:
+				colliding_with = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
+				print(colliding_with)
 				if colliding_with:
 					for target_sprite in colliding_with:
-						target_sprite.inflict_damage(self.player, attack_sprite.sprite_type)
+						target_sprite.receive_damage(self.player, 'weapon')
 
 	def get_mini_game_number(self, player_pos):
 		x, y = player_pos[0], player_pos[1]
@@ -208,7 +216,6 @@ class Level:
 		self.player.health -= amount
 		self.player.vulnerable = False
 
-
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
@@ -230,13 +237,13 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.display_surface.blit(self.floor_surf, floor_offset_pos)
 
     def custom_draw(self, player):
-        sorted_sprites = sorted(self.sprites(), key=lambda sprite: sprite.rect.centery)
+        self.draw_floor()
+        sorted_sprites = sorted(self.sprites(), key = lambda sprite: sprite.rect.centery)
         for sprite in sorted_sprites:
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
-
-        self.draw_floor()
         self.calculate_offset(player)
+
 
         # Draw meters
         health_meter_rect = pygame.Rect(40, 10, player.health * 2.5, 20)
@@ -265,7 +272,10 @@ class YSortCameraGroup(pygame.sprite.Group):
             if isinstance(sprite, Player):
                 sprite.attack()
     def update_enemy_sprites(self, player):
+        print("Updating enemy sprites")
         enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite,'sprite_type') and sprite.sprite_type == 'enemy']
-        for enemy in enemy_sprites:
-            enemy.update(player)
+        
+        for idx, enemy in enumerate(enemy_sprites):
+            print(idx)
+            enemy.update_enemy(player)
 
