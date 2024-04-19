@@ -5,10 +5,10 @@ from settings import *
 class Levelf:
     def __init__(self):
         self.slides = [
-            {"image": "outrologi/hoax.png", "text": "Where am I ?"},
-            {"image": "outrologi/hoax.png", "text": "Your laughter was music to my ears, and your smile could brighten even the darkest of days."},
-            {"image": "black.jpeg", "text": "I watched you grow, taking your first steps, saying your first words, each moment etched into my heart forever."},
-            {"image": "black.jpeg", "text": "But as time passed, I saw a change in you, a darkness creeping into your soul, clouding the light that once shone so brightly."},
+            {"image": "outrologi/downidle.png", "text": "Where am I ?"},
+            {"image": "black.jpeg", "text": "Your laughter was music to my ears, and your smile could brighten even the darkest of days."},
+            {"image": "outrologi/hoax.png", "text": "I watched you grow, taking your first steps, saying your first words, each moment etched into my heart forever."},
+            {"image": "outrologi/hoax.png", "text": "But as time passed, I saw a change in you, a darkness creeping into your soul, clouding the light that once shone so brightly."},
             {"image": "outrologi/image2.png", "text": "My beloved child, as your mother, I remember holding you in my arms, feeling the warmth of your tiny body against mine."},
             {"image": "outrologi/image3.png", "text": "You were my greatest blessing, my little ray of sunshine in a world filled with shadows."},
             {"image": "outrologi/image4.png", "text": "But as you grew older, I watched helplessly as the shadows closed in, stealing away the light and leaving only darkness behind."},

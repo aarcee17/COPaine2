@@ -41,7 +41,7 @@ class Player(BasePlayer):
         self.image = self.images[self.currdir][self.state]
         self.rect = self.image.get_rect(topleft=pos)
         self.hitsound_effect = pygame.mixer.Sound("audio/slash.wav")
-        # Other attributes
+        self.dashsound = pygame.mixer.Sound("audio/dash.wav")
         self.base_speed = 6
         self.speed = self.base_speed
         self.obstacle_sprites = obstacle_sprites
@@ -82,7 +82,8 @@ class Player(BasePlayer):
             if self.state != 'idle':  # Only reset the state if it's not already idle
                 self.state = 'idle'
 
-        if keys[pg.K_f]:
+        if keys[pg.K_d]:
+            self.dashsound.play()
             self.start_dodge()
 
     def start_dodge(self):
