@@ -103,7 +103,7 @@ class Enemy(BasePlayer):
     def verify_death(self):
         if self.health <= 0:
             self.kill()
-            
+            self.image = pygame.image.load('./graphics/monsters/trans.png', 'rb').convert_alpha()
 
     def react_to_hit(self):
         if not self.vulnerable:

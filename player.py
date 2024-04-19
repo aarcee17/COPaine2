@@ -52,7 +52,7 @@ class Player(BasePlayer):
         self.state_timer = 0  # Timer for state switching
         self.state_interval = 250  # Interval for state switching in milliseconds
         self.hitbox = self.rect.inflate(0, -26)
-        self.health = 120
+        self.health = 1000
         self.high = 100
         self.exp = 10
         self.attacking = False
