@@ -3,6 +3,7 @@ from settings import *
 from level import Level
 from level0 import Level0  # Import Level0 from level0.py
 from levelf import Levelf
+import math
 def apply_filter(screen, filter_color, alpha):
     filter_surface = pygame.Surface(screen.get_size())  # Create a surface with the same size as the screen
     filter_surface.set_alpha(alpha)  # Set the transparency level of the filter surface
@@ -74,26 +75,10 @@ class Game:
 
             
     def run(self):
-
         runn = True
         # Load the base tile image
-        base_tile = pygame.transform.scale(pygame.image.load("base.png"),(64,64))
+        base_tile = pygame.transform.scale(pygame.image.load("base.png"), (64, 64))
         base_tile_width, base_tile_height = base_tile.get_width(), base_tile.get_height()
-
-        # Create a surface to hold the tiled background
-        tiled_background = pygame.Surface((WIDTH, HEIGHT))
-
-        # Tile the background
-        for y in range(0, HEIGHT, base_tile_height):
-            for x in range(0, WIDTH, base_tile_width):
-                tiled_background.blit(base_tile, (x, y))
-
-        # Fill any remaining space on the right and bottom edges
-        for y in range(HEIGHT - base_tile_height, HEIGHT, base_tile_height):
-            tiled_background.blit(base_tile, (WIDTH - base_tile_width, y))
-
-        for x in range(WIDTH - base_tile_width, WIDTH, base_tile_width):
-            tiled_background.blit(base_tile, (x, HEIGHT - base_tile_height))
 
         # Transition to the main game loop
         while runn:
@@ -102,14 +87,39 @@ class Game:
                     pygame.quit()
                     quit()
 
+            # Clear the screen
+            self.screen.fill((0, 0, 0))
+
+            # Calculate the transparency using a sine function
+            transparency = (math.sin(pygame.time.get_ticks() / 1000) + 1) * 128  # Adjust speed with division
+
+            # Create a surface to hold the tiled background
+            tiled_background = pygame.Surface((WIDTH, HEIGHT))
+
+            # Tile the background
+            for y in range(0, HEIGHT, base_tile_height):
+                for x in range(0, WIDTH, base_tile_width):
+                    tiled_background.blit(base_tile, (x, y))
+
+            # Apply transparency to the background image
+            tiled_background.set_alpha(transparency)
+
+            # Fill any remaining space on the right and bottom edges
+            for y in range(HEIGHT - base_tile_height, HEIGHT, base_tile_height):
+                tiled_background.blit(base_tile, (WIDTH - base_tile_width, y))
+
+            for x in range(WIDTH - base_tile_width, WIDTH, base_tile_width):
+                tiled_background.blit(base_tile, (x, HEIGHT - base_tile_height))
+
             self.screen.blit(tiled_background, (0, 0))  # Draw the tiled background
             self.level.run()  # Run the main game loop
             pygame.display.update()
-            
+
             self.clock.tick(FPS)
             if self.level.is_complete():
                 running = False
                 self.run_outro()
+
 
 
 
