@@ -23,6 +23,7 @@ class Level:
 		self.visible_sprites = YSortCameraGroup(self)
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.weapon_sprites = pygame.sprite.Group()
+		self.healed = False
 		self.attackable_sprites = pygame.sprite.Group()
 
 		self.mini_game_active = [True, True, True, True, True, True, True, True, True, True]
@@ -147,16 +148,18 @@ class Level:
 		self.visible_sprites.custom_draw(self.player)
 		# debug([self.player.rect.center, self.player.health, self.player.high, self.player.exp])
 		self.visible_sprites.update()
+		self.checkHealing()
 
 		self.check_mini_game()
 		self.visible_sprites.update_enemy_sprites(self.player)
 		self.execute_player_attack()
 
+
 	def execute_player_attack(self):
 		if self.weapon_sprites:
 			for attack_sprite in self.weapon_sprites:
 				colliding_with = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
-				print(colliding_with)
+				# print(colliding_with)
 				if colliding_with:
 					for target_sprite in colliding_with:
 						target_sprite.receive_damage(self.player, self.player.exp)
@@ -209,7 +212,7 @@ class Level:
 			self.player.high -= 10
 
 			# print("Final Score from Mini-Game:", final_score)
-			print(self.mini_game_active) 
+			# print(self.mini_game_active) 
             #play_sound("graphics/sound/vending.wav")
             
             
@@ -219,6 +222,14 @@ class Level:
 	def damage_player(self,amount):
 		self.player.health -= amount
 		self.player.vulnerable = False
+	def checkHealing(self):
+		# print("Checking heal")
+		if self.player.rect.center[0] >= 2000 and self.player.rect.center[0] <= 2500 and self.player.rect.center[1] >= 100 and self.player.rect.center[1] <= 400 and not self.healed and self.player.health <= 100 and pygame.key.get_pressed()[pygame.K_PERIOD]:
+			self.player.health = 200
+			self.healed = True
+
+100 - 400
+2000 - 2500
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self, level):
@@ -286,10 +297,11 @@ class YSortCameraGroup(pygame.sprite.Group):
             if isinstance(sprite, Player):
                 sprite.attack()
     def update_enemy_sprites(self, player):
-        print("Updating enemy sprites")
+        # print("Updating enemy sprites")
         enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite,'sprite_type') and sprite.sprite_type == 'enemy']
         
         for idx, enemy in enumerate(enemy_sprites):
-            print(idx)
+            # print(idx)
             enemy.update_enemy(player)
-
+    
+    

@@ -71,8 +71,8 @@ class Enemy(BasePlayer):
 
     def determine_status(self, player):
         distance = self.determine_player_distance_direction(player)[0]
-        print("Distance: ", distance)
-        print("Attack radius: ", self.attack_radius)
+        # print("Distance: ", distance)
+        # print("Attack radius: ", self.attack_radius)
         if distance <= self.attack_radius and self.can_attack:
             if self.status != 'attack':
                 self.frame_idx = 0
@@ -94,7 +94,7 @@ class Enemy(BasePlayer):
 
     def animate_movement(self):
         animation = self.animation[self.type][self.status]
-        print(animation)
+        # print(animation)
         self.frame_idx += self.animation_speed
         if self.frame_idx >= len(animation):
             if self.status == 'attack':
@@ -121,7 +121,7 @@ class Enemy(BasePlayer):
         if self.vulnerable:
             self.direction = self.determine_player_distance_direction(player)[1]
             self.hurtsound.play()
-            print("Enemy hit and got damage")
+            # print("Enemy hit and got damage")
             self.health -= 2*log10(exp) + 5
             self.hit_time = pygame.time.get_ticks()
             self.vulnerable = False
@@ -143,7 +143,7 @@ class Enemy(BasePlayer):
         self.verify_death()
 
     def update_enemy(self, player):
-        print("Updating enemy")
+        # print("Updating enemy")
         self.determine_status(player)
         self.perform_actions(player)
         self.update_status()

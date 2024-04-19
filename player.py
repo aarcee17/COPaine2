@@ -2,6 +2,7 @@ import pygame as pg
 from settings import *
 from attack import Weapon
 from basePlayer import BasePlayer
+from debug import debug
 import os
 
 class Player(BasePlayer):
@@ -108,7 +109,8 @@ class Player(BasePlayer):
         pygame.quit()
     
     def update(self):
-        print(self.health)
+        # print(self.health)
+        # debug(self.hitbox.center)
         if self.health <= 0:
             self.kill()
             self.game_over()
